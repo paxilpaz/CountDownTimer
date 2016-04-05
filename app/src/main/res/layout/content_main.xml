@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.paxilpaz.countdowntimer.MainActivity"
+    tools:showIn="@layout/activity_main"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/quarter_timer"
+        android:backgroundTint="@color/black"
+        android:background="@color/black">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/colon"
+            android:src="@drawable/colon"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:tint="@color/green"
+            android:layout_margin="8dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tens_seconds_period"
+            android:src="@drawable/digit_0"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/colon"
+            android:layout_margin="8dp"
+            android:tint="@color/green"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/seconds_period"
+            android:src="@drawable/digit_0"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/tens_seconds_period"
+            android:layout_margin="8dp"
+            android:tint="@color/green"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/minutes"
+            android:src="@drawable/digit_0"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@id/colon"
+            android:layout_margin="8dp"
+            android:tint="@color/green"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tens_minutes"
+            android:src="@drawable/digit_1"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_toStartOf="@id/minutes"
+            android:layout_margin="8dp"
+            android:tint="@color/green"/>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start"
+            android:id="@+id/start" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pause"
+            android:id="@+id/pause_resume"
+            android:enabled="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:id="@+id/reset"
+            android:enabled="false" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout"
+        android:backgroundTint="@color/black"
+        android:background="@color/black" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dot"
+            android:src="@drawable/dot"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:tint="@color/red"
+            android:layout_margin="8dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tenth_of_seconds"
+            android:src="@drawable/digit_0"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/dot"
+            android:layout_margin="8dp"
+            android:tint="@color/red" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/seconds_action"
+            android:src="@drawable/digit_4"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/dot"
+            android:layout_margin="8dp"
+            android:tint="@color/red" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tens_seconds_action"
+            android:src="@drawable/digit_2"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_toStartOf="@+id/seconds_action"
+            android:layout_margin="8dp"
+            android:tint="@color/red" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton" />
+    </LinearLayout>
+
+</LinearLayout>
