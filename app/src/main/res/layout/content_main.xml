@@ -17,7 +17,7 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/quarter_timer"
+        android:id="@+id/period_timer"
         android:backgroundTint="@color/black"
         android:background="@color/black">
 
@@ -79,7 +79,7 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout"
+        android:id="@+id/action_timer"
         android:backgroundTint="@color/black"
         android:background="@color/black" >
 
@@ -131,7 +131,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:id="@+id/timer_buttons">
 
         <ImageButton
             android:layout_width="60dp"
