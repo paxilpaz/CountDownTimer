@@ -28,6 +28,8 @@ public class BasketballCountDownTimer {
 
     private static final int seconds_cents_separator = R.drawable.dot;
 
+    private static final int FOURTEEN = 14000;
+
 
     private static final long MINUTE = 60000;
 
@@ -41,10 +43,12 @@ public class BasketballCountDownTimer {
     private static final long TICK = 10;
 
     //Messages variables to Start/Stop/Reset/Resume the timer
+    private static final int STOP = 0;
     private static final int START = 1;
-    private static final int STOP = 2;
+    private static final int PAUSE = 2;
     private static final int RESUME = 3;
-    private static final int RESET = 4;
+    private static final int RESET14 = 4;
+    private static final int RESET24 = 5;
 
     //Needed to configure the proper timers according to the leagues
     private long actionTime;
@@ -242,9 +246,10 @@ public class BasketballCountDownTimer {
     public synchronized final void cancel() {
         mCancelled = true;
         mHandler.removeMessages(START);
-        mHandler.removeMessages(STOP);
+        mHandler.removeMessages(PAUSE);
         mHandler.removeMessages(RESUME);
-        mHandler.removeMessages(RESET);
+        mHandler.removeMessages(RESET14);
+        mHandler.removeMessages(RESET24);
     }
 
     /**
@@ -271,8 +276,9 @@ public class BasketballCountDownTimer {
         }
         mHandler.removeMessages(START);
         mHandler.removeMessages(RESUME);
-        mHandler.removeMessages(RESET);
-        mHandler.sendMessage(mHandler.obtainMessage(STOP));
+        mHandler.removeMessages(RESET14);
+        mHandler.removeMessages(RESET24);
+        mHandler.sendMessage(mHandler.obtainMessage(PAUSE));
     }
 
     //Resumes the timer
@@ -282,14 +288,20 @@ public class BasketballCountDownTimer {
             return;
         }
         mHandler.removeMessages(START);
-        mHandler.removeMessages(STOP);
-        mHandler.removeMessages(RESET);
+        mHandler.removeMessages(PAUSE);
+        mHandler.removeMessages(RESET14);
+        mHandler.removeMessages(RESET24);
         mHandler.sendMessage(mHandler.obtainMessage(RESUME));
     }
 
     //Resets the timer
-    public synchronized final void reset() {
-        mHandler.sendMessage(mHandler.obtainMessage(RESET));
+    public synchronized final void reset14() {
+        mHandler.sendMessage(mHandler.obtainMessage(RESET14));
+    }
+
+    //Resets the timer
+    public synchronized final void reset24() {
+        mHandler.sendMessage(mHandler.obtainMessage(RESET24));
     }
 
 
@@ -302,15 +314,21 @@ public class BasketballCountDownTimer {
             synchronized (BasketballCountDownTimer.this) {
 
                 switch (msg.what) {
-                    case STOP:
+                    case PAUSE:
                         remainingActionTime = stopTimeAction - SystemClock.elapsedRealtime();
                         remainingPeriodTime = stopTimePeriod - SystemClock.elapsedRealtime();
                         break;
 
-                    case RESET:
+                    case RESET14:
+                        stopTimeAction = SystemClock.elapsedRealtime() + FOURTEEN;
+                        remainingActionTime = FOURTEEN;
+                        this.removeMessages(RESET14);
+                        break;
+
+                    case RESET24:
                         stopTimeAction = SystemClock.elapsedRealtime() + actionTime;
                         remainingActionTime = actionTime;
-                        this.removeMessages(RESET);
+                        this.removeMessages(RESET24);
                         break;
 
                     case RESUME:

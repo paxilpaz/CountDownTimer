@@ -1,12 +1,13 @@
 package com.example.paxilpaz.countdowntimer;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -14,9 +15,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //private CountDownTimer quarterCountdown;
 
     private BasketballCountDownTimer countDownTimer;
-    private Button start;
-    private Button reset;
-    private Button pause_resume;
+    private ImageButton reset14;
+    private ImageButton stop;
+    private ImageButton reset24;
+    private ImageButton start_pause_resume;
 
     private static final int digitsID[] = {R.drawable.digit_0,
             R.drawable.digit_1,
@@ -45,9 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        start = (Button)findViewById(R.id.start);
-        reset = (Button)findViewById(R.id.reset);
-        pause_resume = (Button)findViewById(R.id.pause_resume);
+        start_pause_resume = (ImageButton)findViewById(R.id.start_pause_resume_button);
+        reset14 = (ImageButton)findViewById(R.id.reset_14_button);
+        reset24 = (ImageButton)findViewById(R.id.reset_24_button);
+        stop = (ImageButton)findViewById(R.id.stop_button);
 
         tens_minutes = (ImageView)findViewById(R.id.tens_minutes);
         tens_seconds = (ImageView)findViewById(R.id.tens_seconds_period);
@@ -61,9 +64,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tenths_of_seconds_action = (ImageView)findViewById(R.id.tenth_of_seconds);
 
 
-        start.setOnClickListener(this);
-        reset.setOnClickListener(this);
-        pause_resume.setOnClickListener(this);
+        start_pause_resume.setOnClickListener(this);
+        reset14.setOnClickListener(this);
+        reset24.setOnClickListener(this);
+        stop.setOnClickListener(this);
     }
 
     @Override
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.start:
+            case R.id.start_pause_resume_button:
                 /*previus_tens_of_mins = 10;
                 previous_mins = 0;
                 previous_tens_of_secs= 0;
@@ -146,21 +150,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         seconds_action, actionSeparator, tenths_of_seconds_action
                 });
                 countDownTimer.start();
-                reset.setEnabled(true);
-                pause_resume.setEnabled(true);
-                pause_resume.setText("Pause");
+                //handle buttons
+                start_pause_resume.setImageResource(R.drawable.pause);
+                start_pause_resume.setId(R.id.pause);
+
+                reset14.setEnabled(true);
+                reset14.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black));
+
+                reset24.setEnabled(true);
+                reset24.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black));
+
+                stop.setEnabled(true);
+                stop.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black));
                 break;
-            case  R.id.reset:
-                countDownTimer.reset();
+            case R.id.pause:
+                start_pause_resume.setId(R.id.resume);
+                start_pause_resume.setImageResource(R.drawable.start);
                 break;
-            case  R.id.pause_resume:
-                if ( pause_resume.getText().equals("Pause") ) {
-                    countDownTimer.stop();
-                    pause_resume.setText("Resume");
-                } else {
-                    countDownTimer.resume();
-                    pause_resume.setText("Pause");
-                }
+            case R.id.resume:
+                start_pause_resume.setId(R.id.pause);
+                start_pause_resume.setImageResource(R.drawable.pause);
+                break;
+            case  R.id.reset_14_button:
+                countDownTimer.reset14();
+                break;
+            case  R.id.reset_24_button:
+                countDownTimer.reset24();
+                break;
+            case  R.id.stop_button:
+                //stop countdown
+
+                //reset views
+
+                //reset buttons
+                start_pause_resume.setId(R.id.start_pause_resume_button);
+                start_pause_resume.setImageResource(R.drawable.start);
+
+                stop.setEnabled(false);
+                stop.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
+
+                reset14.setEnabled(false);
+                reset14.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
+
+                reset24.setEnabled(false);
+                reset24.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
                 break;
             default:
                 break;
