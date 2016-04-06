@@ -75,33 +75,6 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            android:id="@+id/start" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pause"
-            android:id="@+id/pause_resume"
-            android:enabled="false" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reset"
-            android:id="@+id/reset"
-            android:enabled="false" />
-    </LinearLayout>
-
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -157,12 +130,65 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal" >
+        android:gravity="center_horizontal"
+        android:weightSum="1">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageButton" />
+            android:layout_width="60dp"
+            android:layout_height="65dp"
+            android:id="@+id/pause_resume_button"
+            android:src="@drawable/start"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:minWidth="70dp"
+            android:minHeight="70dp"
+            android:layout_weight="0.25"
+            android:layout_marginTop="3dp" />
+
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="65dp"
+            android:id="@+id/reset_24_button"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:src="@drawable/reset_24"
+            android:nestedScrollingEnabled="true"
+            android:maxHeight="70dp"
+            android:maxWidth="70dp"
+            android:scaleType="centerInside"
+            android:layout_marginTop="3dp"
+            android:layout_weight="0.25"
+            android:tint="@android:color/darker_gray" />
+
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="65dp"
+            android:id="@+id/reset_14_button"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:src="@drawable/reset_14"
+            android:nestedScrollingEnabled="true"
+            android:maxHeight="70dp"
+            android:maxWidth="70dp"
+            android:scaleType="centerInside"
+            android:layout_marginTop="3dp"
+            android:layout_weight="0.25"
+            android:tint="@android:color/darker_gray" />
+
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="65dp"
+            android:id="@+id/stop"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:src="@drawable/stop"
+            android:nestedScrollingEnabled="true"
+            android:maxHeight="70dp"
+            android:maxWidth="70dp"
+            android:scaleType="centerInside"
+            android:layout_marginTop="3dp"
+            android:layout_weight="0.25"
+            android:tint="@android:color/darker_gray" />
     </LinearLayout>
 
 </LinearLayout>
