@@ -24,12 +24,11 @@ public class BasketballCountDownTimer {
             R.drawable.digit_8,
             R.drawable.digit_9};
 
-    private static final int minutes_seconds_separator = R.drawable.colon;
+    private static final int MINUTES_SEPARATOR = R.drawable.colon;
 
-    private static final int seconds_cents_separator = R.drawable.dot;
+    private static final int SECONDS_SEPARATOR = R.drawable.dot;
 
     private static final int FOURTEEN = 14000;
-
 
     private static final long MINUTE = 60000;
 
@@ -304,6 +303,17 @@ public class BasketballCountDownTimer {
         mHandler.sendMessage(mHandler.obtainMessage(RESET24));
     }
 
+    private synchronized void actionFinishedRepaint() {
+        tensOfSecondsAction.setImageResource(R.drawable.dash);
+        secondsAction.setImageResource(R.drawable.dash);
+        separatorAction.setImageResource(R.drawable.middle_dot);
+        tenthsOfSeconds.setImageResource(R.drawable.dash);
+
+        previous_tens_of_seconds_action = -1;
+        previous_seconds_action = -1;
+        previous_tenths_of_seconds_action = -1;
+    }
+
 
     // handles counting down
     private Handler mHandler = new Handler() {
@@ -323,6 +333,7 @@ public class BasketballCountDownTimer {
                         stopTimeAction = SystemClock.elapsedRealtime() + FOURTEEN;
                         remainingActionTime = FOURTEEN;
                         this.removeMessages(RESET14);
+
                         break;
 
                     case RESET24:
@@ -345,6 +356,11 @@ public class BasketballCountDownTimer {
 
                         if (remainingPeriodTime < MINUTE) {
                             isLastMinute = true;
+                        }
+                        if (remainingActionTime <= 0) {
+                            stop();
+                            actionFinishedRepaint();
+                            break;
                         }
 
                         //countdown finished
@@ -375,7 +391,6 @@ public class BasketballCountDownTimer {
             }
         }
     };
-
 
 
 
