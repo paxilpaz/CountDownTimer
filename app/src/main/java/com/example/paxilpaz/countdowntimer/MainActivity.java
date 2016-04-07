@@ -9,31 +9,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.Observable;
 import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, Observer {
 
-    //private CountDownTimer quarterCountdown;
-
     private BasketballCountDownTimer countDownTimer;
+    private TimerData timerData;
     private ImageButton reset14;
     private ImageButton stop;
     private ImageButton reset24;
     private ImageButton start_pause_resume;
 
     private static final int digitsID[] = {R.drawable.digit_0,
-            R.drawable.digit_1,
-            R.drawable.digit_2,
-            R.drawable.digit_3,
-            R.drawable.digit_4,
-            R.drawable.digit_5,
-            R.drawable.digit_6,
-            R.drawable.digit_7,
-            R.drawable.digit_8,
-            R.drawable.digit_9};
+                                        R.drawable.digit_1,
+                                        R.drawable.digit_2,
+                                        R.drawable.digit_3,
+                                        R.drawable.digit_4,
+                                        R.drawable.digit_5,
+                                        R.drawable.digit_6,
+                                        R.drawable.digit_7,
+                                        R.drawable.digit_8,
+                                        R.drawable.digit_9};
 
     //Period ImageViews
     private ImageView tens_minutes, tens_seconds, seconds, minutes, periodSeparator;
@@ -72,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reset14.setOnClickListener(this);
         reset24.setOnClickListener(this);
         stop.setOnClickListener(this);
+
+        timerData = TimerData.getInstance(this);
+        timerData.addObserver(this);
     }
 
     @Override
@@ -100,60 +101,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_pause_resume_button:
-                /*previus_tens_of_mins = 10;
-                previous_mins = 0;
-                previous_tens_of_secs= 0;
-                previous_secs = 0;
-
-                quarterCountdown = new CountDownTimer(600000, 1000) {
-
-
-
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int tens_of_minutes_to_fininsh = (int) (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) / 10);
-                        int minutes_to_finish = (int) (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 10);
-                        int tens_of_seconds_to_finish = (int) ((TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))) / 10);
-                        int seconds_to_finish = (int) ((TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))) % 10);
-
-                        if ( tens_of_minutes_to_fininsh != previus_tens_of_mins) {
-                            tens_minutes.setImageResource(digitsID[tens_of_minutes_to_fininsh]);
-                            previus_tens_of_mins = tens_of_minutes_to_fininsh;
-                        }
-
-                        if ( minutes_to_finish != previous_mins) {
-                            minutes.setImageResource(digitsID[minutes_to_finish]);
-                            previous_mins = minutes_to_finish;
-                        }
-
-                        if ( tens_of_seconds_to_finish != previous_tens_of_secs) {
-                            tens_seconds.setImageResource(digitsID[tens_of_seconds_to_finish]);
-                            previous_tens_of_secs = tens_of_seconds_to_finish;
-                        }
-
-                        if (seconds_to_finish != previous_secs) {
-                            seconds.setImageResource(digitsID[seconds_to_finish]);
-                            previous_secs = seconds_to_finish;
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        minutes.setImageResource(digitsID[0]);
-                        seconds.setImageResource(digitsID[0]);
-                        tens_seconds.setImageResource(digitsID[0]);
-                        tens_minutes.setImageResource(digitsID[0]);
-                    }
-                }.start();*/
                 countDownTimer = new BasketballCountDownTimer(24000, 30000, new ImageView[] {
                         tens_minutes, minutes, periodSeparator, tens_seconds, seconds, tens_seconds_action,
                         seconds_action, actionSeparator, tenths_of_seconds_action
                 });
-                countDownTimer.addObserver(this);
                 countDownTimer.start();
                 //handle buttons
                 start_pause_resume.setImageResource(R.drawable.pause);
@@ -176,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.resume:
                 start_pause_resume.setId(R.id.pause);
                 start_pause_resume.setImageResource(R.drawable.pause);
+                countDownTimer.resume();
                 break;
             case  R.id.reset_14_button:
                 countDownTimer.reset14();
@@ -185,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case  R.id.stop_button:
                 //stop countdown
-
+                countDownTimer.cancel();
                 //reset views
 
                 //reset buttons
@@ -208,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void update(Observable observable, Object data) {
-        if ((int)data == 2)
-            Toast.makeText(this, "PAusa premuta", Toast.LENGTH_SHORT).show();
+
     }
 }
