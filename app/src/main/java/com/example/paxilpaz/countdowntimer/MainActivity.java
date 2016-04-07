@@ -9,8 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.Observable;
+import java.util.Observer;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, Observer {
 
     //private CountDownTimer quarterCountdown;
 
@@ -149,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         tens_minutes, minutes, periodSeparator, tens_seconds, seconds, tens_seconds_action,
                         seconds_action, actionSeparator, tenths_of_seconds_action
                 });
+                countDownTimer.addObserver(this);
                 countDownTimer.start();
                 //handle buttons
                 start_pause_resume.setImageResource(R.drawable.pause);
@@ -166,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.pause:
                 start_pause_resume.setId(R.id.resume);
                 start_pause_resume.setImageResource(R.drawable.start);
+                countDownTimer.pause();
                 break;
             case R.id.resume:
                 start_pause_resume.setId(R.id.pause);
@@ -198,5 +204,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        if ((int)data == 2)
+            Toast.makeText(this, "PAusa premuta", Toast.LENGTH_SHORT).show();
     }
 }

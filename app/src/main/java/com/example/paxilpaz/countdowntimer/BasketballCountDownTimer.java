@@ -5,12 +5,13 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.widget.ImageView;
 
+import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by paxilpaz on 05/04/16.
  */
-public class BasketballCountDownTimer {
+public class BasketballCountDownTimer extends Observable {
 
     //Digits
     private static final int digitsID[] = {R.drawable.digit_0,
@@ -268,7 +269,7 @@ public class BasketballCountDownTimer {
     }
 
     //Stops the timer
-    public synchronized final void stop() {
+    public synchronized final void pause() {
         if (periodTime <= 0) {
             onFinish();
             return;
@@ -278,6 +279,8 @@ public class BasketballCountDownTimer {
         mHandler.removeMessages(RESET14);
         mHandler.removeMessages(RESET24);
         mHandler.sendMessage(mHandler.obtainMessage(PAUSE));
+        setChanged();
+        notifyObservers(PAUSE);
     }
 
     //Resumes the timer
@@ -358,7 +361,7 @@ public class BasketballCountDownTimer {
                             isLastMinute = true;
                         }
                         if (remainingActionTime <= 0) {
-                            stop();
+                            pause();
                             actionFinishedRepaint();
                             break;
                         }
