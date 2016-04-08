@@ -34,12 +34,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         R.drawable.digit_9};
 
     //Period ImageViews
-    private ImageView tens_minutes, tens_seconds, seconds, minutes, periodSeparator;
+    private ImageView tens_minutes;
+    private ImageView tens_seconds;
+    private ImageView seconds;
+    private ImageView minutes;
+    private ImageView periodSeparator;
 
     //Action ImageViews
-    private ImageView tens_seconds_action, seconds_action, actionSeparator, tenths_of_seconds_action;
+    private ImageView tens_seconds_action;
+    private ImageView seconds_action;
+    private ImageView actionSeparator;
+    private ImageView tenths_of_seconds_action;
 
-    private int previus_tens_of_mins, previous_mins, previous_tens_of_secs_perios, previous_secs_period;
+    //variables to store previous state of digits and avoid updating them if not necessary
+    private int previousPeriodTensMinutes;
+    private int previousPeriodMinutes;
+    private int previousPeriodTensSeconds;
+    private int previousPeriodSeconds;
+
+    private int previousActionTensSeconds;
+    private int previousActionSeconds;
+    private int previousActionTenthsSeconds;
 
 
     @Override
@@ -49,28 +64,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Get buttons
         start_pause_resume = (ImageButton)findViewById(R.id.start_pause_resume_button);
         reset14 = (ImageButton)findViewById(R.id.reset_14_button);
         reset24 = (ImageButton)findViewById(R.id.reset_24_button);
         stop = (ImageButton)findViewById(R.id.stop_button);
-
+        //Add listeners to the buttons
+        start_pause_resume.setOnClickListener(this);
+        reset14.setOnClickListener(this);
+        reset24.setOnClickListener(this);
+        stop.setOnClickListener(this);
+        //Get Period ImageViews
         tens_minutes = (ImageView)findViewById(R.id.tens_minutes);
         tens_seconds = (ImageView)findViewById(R.id.tens_seconds_period);
         seconds = (ImageView)findViewById(R.id.seconds_period);
         minutes = (ImageView)findViewById(R.id.minutes);
         periodSeparator = (ImageView)findViewById(R.id.colon);
-
+        //Get Action ImageViews
         tens_seconds_action = (ImageView)findViewById(R.id.tens_seconds_action);
         seconds_action = (ImageView)findViewById(R.id.seconds_action);
         actionSeparator = (ImageView)findViewById(R.id.dot);
         tenths_of_seconds_action = (ImageView)findViewById(R.id.tenth_of_seconds);
+        //Setting variables to -1 when creating the Activity
+        previousPeriodTensMinutes = -1;
+        previousPeriodMinutes = -1;
+        previousPeriodTensSeconds = -1;
+        previousPeriodSeconds = -1;
+        previousActionTensSeconds = -1;
+        previousActionSeconds = -1;
+        previousActionTenthsSeconds = -1;
 
-
-        start_pause_resume.setOnClickListener(this);
-        reset14.setOnClickListener(this);
-        reset24.setOnClickListener(this);
-        stop.setOnClickListener(this);
-
+        //Getting TimerData and adding this activity as Observer
         timerData = TimerData.getInstance(this);
         timerData.addObserver(this);
     }
@@ -101,10 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_pause_resume_button:
-                countDownTimer = new BasketballCountDownTimer(24000, 30000, new ImageView[] {
-                        tens_minutes, minutes, periodSeparator, tens_seconds, seconds, tens_seconds_action,
-                        seconds_action, actionSeparator, tenths_of_seconds_action
-                });
+                countDownTimer = new BasketballCountDownTimer(this);
                 countDownTimer.start();
                 //handle buttons
                 start_pause_resume.setImageResource(R.drawable.pause);
@@ -160,6 +181,121 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void update(Observable observable, Object data) {
+        //Just to be sure, we check that the observable is our TimerData
+        if (observable instanceof TimerData) {
+            //Update the GUI, starting with the period timer
+            if (timerData.getPeriodMinutesTens() == Integer.MIN_VALUE) {
+                //In this case, period is finished
+                tens_minutes.setImageResource(R.drawable.dash);
+                minutes.setImageResource(R.drawable.dash);
+                periodSeparator.setImageResource(R.drawable.middle_dot);
+                tens_seconds.setImageResource(R.drawable.dash);
+                seconds.setImageResource(R.drawable.dash);
 
+                tens_seconds_action.setImageResource(R.drawable.dash);
+                seconds_action.setImageResource(R.drawable.dash);
+                actionSeparator.setImageResource(R.drawable.middle_dot);
+                tenths_of_seconds_action.setImageResource(R.drawable.dash);
+
+                actionSeparator.setImageResource(R.drawable.middle_dot);
+                periodSeparator.setImageResource(R.drawable.middle_dot);
+
+            } else if (timerData.getPeriodMinutesTens() == -1) {
+                //In this case, we are in the last minute
+
+                //refreshing the period timer
+                if (previousPeriodTensMinutes != timerData.getPeriodSecondsTens()) {
+                    previousPeriodTensMinutes = timerData.getPeriodSecondsTens();
+                    tens_minutes.setImageResource(digitsID[previousPeriodTensMinutes]);
+                }
+                if (previousPeriodMinutes != timerData.getPeriodSeconds()) {
+                    previousPeriodMinutes = timerData.getPeriodSeconds();
+                    minutes.setImageResource(digitsID[previousPeriodMinutes]);
+                }
+                if (previousPeriodTensSeconds != timerData.getPeriodSecondsTenths()) {
+                    previousPeriodTensSeconds = timerData.getPeriodSecondsTenths();
+                    tens_seconds.setImageResource(digitsID[previousPeriodTensSeconds]);
+                }
+                previousPeriodSeconds = timerData.getPeriodSecondsHundreths();
+                seconds.setImageResource(digitsID[previousPeriodSeconds]);
+
+                periodSeparator.setImageResource(R.drawable.dot);
+
+                //refreshing the action timer
+                if (timerData.getActionSecondsTens() == -1) {
+                    //Action is finished, display dashes and reset values of variables
+                    tens_seconds_action.setImageResource(R.drawable.dash);
+                    seconds_action.setImageResource(R.drawable.dash);
+                    tenths_of_seconds_action.setImageResource(R.drawable.dash);
+                    actionSeparator.setImageResource(R.drawable.middle_dot);
+
+                    previousActionTensSeconds = -1;
+                    previousActionTenthsSeconds = -1;
+                    previousActionSeconds = -1;
+                } else {
+                    if (previousActionTensSeconds != timerData.getActionSecondsTens()) {
+                        previousActionTensSeconds = timerData.getActionSecondsTens();
+                        tens_seconds_action.setImageResource(digitsID[previousActionTensSeconds]);
+                    }
+                    if (previousActionSeconds != timerData.getActionSeconds()) {
+                        previousActionSeconds = timerData.getActionSeconds();
+                        seconds_action.setImageResource(digitsID[previousActionSeconds]);
+                    }
+                    if (previousActionTenthsSeconds != timerData.getActionSecondsTenths()) {
+                        previousActionTenthsSeconds = timerData.getActionSecondsTenths();
+                        tenths_of_seconds_action.setImageResource(digitsID[previousActionTenthsSeconds]);
+                    }
+                    actionSeparator.setImageResource(R.drawable.dot);
+                }
+            } else {
+                //Normal behaviour
+                //refreshing the period timer
+                if (previousPeriodTensMinutes != timerData.getPeriodMinutesTens()) {
+                    previousPeriodTensMinutes = timerData.getPeriodMinutesTens();
+                    tens_minutes.setImageResource(digitsID[previousPeriodTensMinutes]);
+                }
+                if (previousPeriodMinutes != timerData.getPeriodMinutes()) {
+                    previousPeriodMinutes = timerData.getPeriodMinutes();
+                    minutes.setImageResource(digitsID[previousPeriodMinutes]);
+                }
+                if (previousPeriodTensSeconds != timerData.getPeriodSecondsTens()) {
+                    previousPeriodTensSeconds = timerData.getPeriodSecondsTens();
+                    tens_seconds.setImageResource(digitsID[previousPeriodTensSeconds]);
+                }
+                if (previousPeriodSeconds != timerData.getPeriodSeconds()) {
+                    previousPeriodSeconds = timerData.getPeriodSeconds();
+                    seconds.setImageResource(digitsID[previousPeriodSeconds]);
+                }
+
+                periodSeparator.setImageResource(R.drawable.colon);
+
+                //refreshing the action timer
+                if (timerData.getActionSecondsTens() == -1) {
+                    //Action is finished, display dashes and reset values of variables
+                    tens_seconds_action.setImageResource(R.drawable.dash);
+                    seconds_action.setImageResource(R.drawable.dash);
+                    tenths_of_seconds_action.setImageResource(R.drawable.dash);
+                    actionSeparator.setImageResource(R.drawable.middle_dot);
+
+                    previousActionTensSeconds = -1;
+                    previousActionTenthsSeconds = -1;
+                    previousActionSeconds = -1;
+                } else {
+                    if (previousActionTensSeconds != timerData.getActionSecondsTens()) {
+                        previousActionTensSeconds = timerData.getActionSecondsTens();
+                        tens_seconds_action.setImageResource(digitsID[previousActionTensSeconds]);
+                    }
+                    if (previousActionSeconds != timerData.getActionSeconds()) {
+                        previousActionSeconds = timerData.getActionSeconds();
+                        seconds_action.setImageResource(digitsID[previousActionSeconds]);
+                    }
+                    if (previousActionTenthsSeconds != timerData.getActionSecondsTenths()) {
+                        previousActionTenthsSeconds = timerData.getActionSecondsTenths();
+                        tenths_of_seconds_action.setImageResource(digitsID[previousActionTenthsSeconds]);
+                    }
+                    actionSeparator.setImageResource(R.drawable.dot);
+                }
+            }
+        }
     }
 }

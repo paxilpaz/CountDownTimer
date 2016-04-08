@@ -1,32 +1,22 @@
 package com.example.paxilpaz.countdowntimer;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.widget.ImageView;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by paxilpaz on 05/04/16.
  */
 public class BasketballCountDownTimer {
 
-    //Digits
-    private static final int digitsID[] = {R.drawable.digit_0,
-            R.drawable.digit_1,
-            R.drawable.digit_2,
-            R.drawable.digit_3,
-            R.drawable.digit_4,
-            R.drawable.digit_5,
-            R.drawable.digit_6,
-            R.drawable.digit_7,
-            R.drawable.digit_8,
-            R.drawable.digit_9};
+    //Constants
+    private static final long MSEC_IN_SEC = 1000;
 
-    private static final int MINUTES_SEPARATOR = R.drawable.colon;
 
-    private static final int SECONDS_SEPARATOR = R.drawable.dot;
+    //The instance of TimerData
+    private TimerData timerData;
 
     private static final int FOURTEEN = 14000;
 
@@ -42,7 +32,6 @@ public class BasketballCountDownTimer {
     private static final long TICK = 10;
 
     //Messages variables to Start/Stop/Reset/Resume the timer
-    private static final int STOP = 0;
     private static final int START = 1;
     private static final int PAUSE = 2;
     private static final int RESUME = 3;
@@ -61,181 +50,22 @@ public class BasketballCountDownTimer {
     private long stopTimePeriod;
     private long stopTimeAction;
 
-    //Values to prevent irrelevant refreshes (Period)
-    private int previus_tens_of_mins;
-    private int previous_mins;
-    private int previous_tens_of_secs_period;
-    private int previous_secs_period;
-
-    //Values to prevent irrelevant refreshes (Period when counting last minute)
-    private int previous_last_minute_tens_of_seconds;
-    private int previous_last_minute_seconds;
-    private int previous_last_minute_tenths_of_seconds;
-    private int previous_last_minute_hundreths_of_seconds;
-
-    //Values to prevent irrelevant refreshes (Action)
-    private int previous_tens_of_seconds_action;
-    private int previous_seconds_action;
-    private int previous_tenths_of_seconds_action;
-
-    private boolean isLastMinute;
-    private boolean isSeparatorPeriodChanged = false;
-
     /**
      * boolean representing if the timer was cancelled
      */
     private boolean mCancelled = false;
 
-    public BasketballCountDownTimer(long actionTime, long periodTime, ImageView views[]) {
-        this.actionTime = actionTime;
-        this.periodTime = periodTime;
+    public BasketballCountDownTimer(Context context) {
 
-        if (periodTime < MINUTE)
-            isLastMinute = true;
+        timerData = TimerData.getInstance(context);
 
-        //Get Views for Period timer
-        tensOfMinutes = views[0];
-        minutes = views[1];
-        separatorPeriod = views[2];
-        tensOfSecondsPeriod = views[3];
-        secondsPeriod = views[4];
-
-        //Get Views for Action timer
-        tensOfSecondsAction = views[5];
-        secondsAction = views[6];
-        separatorAction = views[7];
-        tenthsOfSeconds = views[8];
-
-        //Previous values for period timer
-        previous_mins = -1;
-        previous_secs_period = -1;
-        previous_tens_of_secs_period = -1;
-        previus_tens_of_mins = -1;
-
-        //Previous values for action timer
-        previous_tens_of_seconds_action = -1;
-        previous_seconds_action = -1;
-        previous_tenths_of_seconds_action = -1;
-
-        //Previous values for period timer when counting last minute
-        previous_last_minute_hundreths_of_seconds = -1;
-        previous_last_minute_seconds = -1;
-        previous_last_minute_tens_of_seconds = -1;
-        previous_last_minute_tenths_of_seconds = -1;
-
-    }
-
-    public void onTick() {
-
-        //evaluate if last action
-        if ( isLastMinute ) {
-
-            //last action: clear action timer
-            if (remainingPeriodTime < remainingActionTime) {
-                secondsAction.setImageResource(0);
-                tensOfSecondsAction.setImageResource(0);
-                tenthsOfSeconds.setImageResource(0);
-                separatorAction.setImageResource(0);
-            } else {
-                actionTimerUpdate();
-            }
-
-            //change separator the first time
-            if (!isSeparatorPeriodChanged) {
-                isSeparatorPeriodChanged = true;
-                separatorPeriod.setImageResource(R.drawable.dot);
-            }
-
-
-            //switch period timer to hundreths of seconds
-            //Handling period timer
-            int tens_of_seconds_last_minute = (int) ((TimeUnit.MILLISECONDS.toSeconds(remainingPeriodTime)) / 10);
-            int seconds_last_minute = (int) ((TimeUnit.MILLISECONDS.toSeconds(remainingPeriodTime)) % 10);
-            int tenths_of_seconds_last_minute = (int) ((remainingPeriodTime % 1000) / 100);
-            int hundreths_of_seconds_last_minute = (int) ((remainingPeriodTime % 100) / 10 );
-
-            if (previous_last_minute_tens_of_seconds != tens_of_seconds_last_minute) {
-                tensOfMinutes.setImageResource(digitsID[tens_of_seconds_last_minute]);
-                previous_last_minute_tens_of_seconds = tens_of_seconds_last_minute;
-            }
-
-            if (previous_last_minute_seconds != seconds_last_minute) {
-                minutes.setImageResource(digitsID[seconds_last_minute]);
-                previous_last_minute_seconds = seconds_last_minute;
-            }
-
-            if (previous_last_minute_tenths_of_seconds != tenths_of_seconds_last_minute) {
-                tensOfSecondsPeriod.setImageResource(digitsID[tenths_of_seconds_last_minute]);
-                previous_last_minute_tenths_of_seconds = tenths_of_seconds_last_minute;
-            }
-
-            if (previous_last_minute_hundreths_of_seconds != hundreths_of_seconds_last_minute) {
-                secondsPeriod.setImageResource(digitsID[hundreths_of_seconds_last_minute]);
-                previous_last_minute_hundreths_of_seconds = hundreths_of_seconds_last_minute;
-            }
-
-        } else {
-            //Handling period timer
-            int tens_of_minutes_to_fininsh = (int) (TimeUnit.MILLISECONDS.toMinutes(remainingPeriodTime) / 10);
-            int minutes_to_finish = (int) (TimeUnit.MILLISECONDS.toMinutes(remainingPeriodTime) % 10);
-            int tens_of_seconds_to_finish = (int) ((TimeUnit.MILLISECONDS.toSeconds(remainingPeriodTime) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remainingPeriodTime))) / 10);
-            int seconds_to_finish = (int) ((TimeUnit.MILLISECONDS.toSeconds(remainingPeriodTime) -
-                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remainingPeriodTime))) % 10);
-
-            if ( tens_of_minutes_to_fininsh != previus_tens_of_mins) {
-                tensOfMinutes.setImageResource(digitsID[tens_of_minutes_to_fininsh]);
-                previus_tens_of_mins = tens_of_minutes_to_fininsh;
-            }
-
-            if ( minutes_to_finish != previous_mins) {
-                minutes.setImageResource(digitsID[minutes_to_finish]);
-                previous_mins = minutes_to_finish;
-            }
-
-            if ( tens_of_seconds_to_finish != previous_tens_of_secs_period) {
-                tensOfSecondsPeriod.setImageResource(digitsID[tens_of_seconds_to_finish]);
-                previous_tens_of_secs_period = tens_of_seconds_to_finish;
-            }
-
-            if (seconds_to_finish != previous_secs_period) {
-                secondsPeriod.setImageResource(digitsID[seconds_to_finish]);
-                previous_secs_period = seconds_to_finish;
-            }
-
-            actionTimerUpdate();
-
-        }
-
-
-    }
-
-    private void actionTimerUpdate() {
-        //Handling action timer
-        int tens_of_seconds_action = (int) ((TimeUnit.MILLISECONDS.toSeconds(remainingActionTime) -
-                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remainingActionTime))) / 10);
-        int seconds_action = (int) ((TimeUnit.MILLISECONDS.toSeconds(remainingActionTime) -
-                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remainingActionTime))) % 10);
-        int tenths_of_seconds_action = (int) ((remainingActionTime - tens_of_seconds_action * 10000 - seconds_action * 1000) / 100);
-
-        if (previous_tens_of_seconds_action != tens_of_seconds_action) {
-            tensOfSecondsAction.setImageResource(digitsID[tens_of_seconds_action]);
-            previous_tens_of_seconds_action = tens_of_seconds_action;
-        }
-
-        if (previous_seconds_action != seconds_action) {
-            secondsAction.setImageResource(digitsID[seconds_action]);
-            previous_seconds_action = seconds_action;
-        }
-
-        if (previous_tenths_of_seconds_action != tenths_of_seconds_action) {
-            tenthsOfSeconds.setImageResource(digitsID[tenths_of_seconds_action]);
-            previous_tenths_of_seconds_action = tenths_of_seconds_action;
-        }
+        actionTime = timerData.getActionTime() * MSEC_IN_SEC;
+        periodTime = timerData.getPeriodTime() * MSEC_IN_SEC;
     }
 
     public void onFinish() {
-
+        timerData.updateData(0,0);
+        cancel();
     }
 
 
@@ -303,17 +133,6 @@ public class BasketballCountDownTimer {
         mHandler.sendMessage(mHandler.obtainMessage(RESET24));
     }
 
-    private synchronized void actionFinishedRepaint() {
-        tensOfSecondsAction.setImageResource(R.drawable.dash);
-        secondsAction.setImageResource(R.drawable.dash);
-        separatorAction.setImageResource(R.drawable.middle_dot);
-        tenthsOfSeconds.setImageResource(R.drawable.dash);
-
-        previous_tens_of_seconds_action = -1;
-        previous_seconds_action = -1;
-        previous_tenths_of_seconds_action = -1;
-    }
-
 
     // handles counting down
     private Handler mHandler = new Handler() {
@@ -332,14 +151,13 @@ public class BasketballCountDownTimer {
                     case RESET14:
                         stopTimeAction = SystemClock.elapsedRealtime() + FOURTEEN;
                         remainingActionTime = FOURTEEN;
-                        this.removeMessages(RESET14);
-
+                        removeMessages(RESET14);
                         break;
 
                     case RESET24:
                         stopTimeAction = SystemClock.elapsedRealtime() + actionTime;
                         remainingActionTime = actionTime;
-                        this.removeMessages(RESET24);
+                        removeMessages(RESET24);
                         break;
 
                     case RESUME:
@@ -354,12 +172,8 @@ public class BasketballCountDownTimer {
                         remainingPeriodTime = stopTimePeriod - SystemClock.elapsedRealtime();
                         remainingActionTime = stopTimeAction - SystemClock.elapsedRealtime();
 
-                        if (remainingPeriodTime < MINUTE) {
-                            isLastMinute = true;
-                        }
                         if (remainingActionTime <= 0) {
                             pause();
-                            actionFinishedRepaint();
                             break;
                         }
 
@@ -371,7 +185,7 @@ public class BasketballCountDownTimer {
                             sendMessageDelayed(obtainMessage(START), remainingPeriodTime);
                         } else {
                             long lastTickStart = SystemClock.elapsedRealtime();
-                            onTick();
+                            timerData.updateData(remainingPeriodTime, remainingActionTime);
 
                             // take into account user's onTick taking time to execute
                             long delay = lastTickStart + TICK - SystemClock.elapsedRealtime();
