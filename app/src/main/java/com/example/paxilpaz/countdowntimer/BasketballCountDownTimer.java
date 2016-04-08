@@ -200,8 +200,6 @@ public class BasketballCountDownTimer {
                     default:
                         break;
                 }
-
-
             }
         }
     };

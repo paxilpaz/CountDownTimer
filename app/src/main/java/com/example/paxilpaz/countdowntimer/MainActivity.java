@@ -86,13 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         actionSeparator = (ImageView)findViewById(R.id.dot);
         tenths_of_seconds_action = (ImageView)findViewById(R.id.tenth_of_seconds);
         //Setting variables to -1 when creating the Activity
-        previousPeriodTensMinutes = -1;
-        previousPeriodMinutes = -1;
-        previousPeriodTensSeconds = -1;
-        previousPeriodSeconds = -1;
-        previousActionTensSeconds = -1;
-        previousActionSeconds = -1;
-        previousActionTenthsSeconds = -1;
+        resetVariablesForRefreshes();
 
         //Getting TimerData and adding this activity as Observer
         timerData = TimerData.getInstance(this);
@@ -152,31 +146,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case  R.id.reset_14_button:
                 countDownTimer.reset14();
+                start_pause_resume.setColorFilter(ContextCompat.getColor(this, R.color.black));
+                start_pause_resume.setEnabled(true);
+                if (start_pause_resume.getId() == R.id.resume) {
+                    //Timer was paused... We will update the action timer in order to show 14,0
+                    resetActionTimerToSeconds(1, 4);
+                }
                 break;
             case  R.id.reset_24_button:
                 countDownTimer.reset24();
+                start_pause_resume.setColorFilter(ContextCompat.getColor(this, R.color.black));
+                start_pause_resume.setEnabled(true);
+                if (start_pause_resume.getId() == R.id.resume) {
+                    //Timer was paused... We will update the action timer in order to show 14,0
+                    resetActionTimerToSeconds(2, 4);
+                }
                 break;
             case  R.id.stop_button:
-                //stop countdown
-                countDownTimer.cancel();
-                //reset views
-
-                //reset buttons
-                start_pause_resume.setId(R.id.start_pause_resume_button);
-                start_pause_resume.setImageResource(R.drawable.start);
-
-                stop.setEnabled(false);
-                stop.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
-
-                reset14.setEnabled(false);
-                reset14.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
-
-                reset24.setEnabled(false);
-                reset24.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
+                resetTimerAndButtons();
                 break;
             default:
                 break;
         }
+    }
+
+    private void resetActionTimerToSeconds(int tensOfSecs, int secs) {
+        tens_seconds_action.setImageResource(digitsID[tensOfSecs]);
+        seconds_action.setImageResource(digitsID[secs]);
+        tenths_of_seconds_action.setImageResource(digitsID[0]);
+        actionSeparator.setImageResource(R.drawable.dot);
+        previousActionTensSeconds = tensOfSecs;
+        previousActionSeconds = secs;
+        previousActionTenthsSeconds = 0;
     }
 
     @Override
@@ -199,6 +200,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 actionSeparator.setImageResource(R.drawable.middle_dot);
                 periodSeparator.setImageResource(R.drawable.middle_dot);
+
+                resetVariablesForRefreshes();
+
+                resetTimerAndButtons();
 
             } else if (timerData.getPeriodMinutesTens() == -1) {
                 //In this case, we are in the last minute
@@ -223,29 +228,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //refreshing the action timer
                 if (timerData.getActionSecondsTens() == -1) {
-                    //Action is finished, display dashes and reset values of variables
-                    tens_seconds_action.setImageResource(R.drawable.dash);
-                    seconds_action.setImageResource(R.drawable.dash);
-                    tenths_of_seconds_action.setImageResource(R.drawable.dash);
-                    actionSeparator.setImageResource(R.drawable.middle_dot);
-
-                    previousActionTensSeconds = -1;
-                    previousActionTenthsSeconds = -1;
-                    previousActionSeconds = -1;
+                    //Action time is more than peridd time, display dashes and reset values of variables
+                    dashAction();
                 } else {
-                    if (previousActionTensSeconds != timerData.getActionSecondsTens()) {
-                        previousActionTensSeconds = timerData.getActionSecondsTens();
-                        tens_seconds_action.setImageResource(digitsID[previousActionTensSeconds]);
+                    if (timerData.getActionSecondsTens() == 0 &&
+                            timerData.getActionSeconds() == 0 &&
+                            timerData.getActionSecondsTenths() == 0) {
+                        //Action finished. Display dashes, refactor pause button
+                        dashAction();
+                        actionFinishedRefactorPauseButton();
+                    } else {
+                        if (previousActionTensSeconds != timerData.getActionSecondsTens()) {
+                            previousActionTensSeconds = timerData.getActionSecondsTens();
+                            tens_seconds_action.setImageResource(digitsID[previousActionTensSeconds]);
+                        }
+                        if (previousActionSeconds != timerData.getActionSeconds()) {
+                            previousActionSeconds = timerData.getActionSeconds();
+                            seconds_action.setImageResource(digitsID[previousActionSeconds]);
+                        }
+                        if (previousActionTenthsSeconds != timerData.getActionSecondsTenths()) {
+                            previousActionTenthsSeconds = timerData.getActionSecondsTenths();
+                            tenths_of_seconds_action.setImageResource(digitsID[previousActionTenthsSeconds]);
+                        }
+                        actionSeparator.setImageResource(R.drawable.dot);
                     }
-                    if (previousActionSeconds != timerData.getActionSeconds()) {
-                        previousActionSeconds = timerData.getActionSeconds();
-                        seconds_action.setImageResource(digitsID[previousActionSeconds]);
-                    }
-                    if (previousActionTenthsSeconds != timerData.getActionSecondsTenths()) {
-                        previousActionTenthsSeconds = timerData.getActionSecondsTenths();
-                        tenths_of_seconds_action.setImageResource(digitsID[previousActionTenthsSeconds]);
-                    }
-                    actionSeparator.setImageResource(R.drawable.dot);
                 }
             } else {
                 //Normal behaviour
@@ -272,30 +278,79 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //refreshing the action timer
                 if (timerData.getActionSecondsTens() == -1) {
                     //Action is finished, display dashes and reset values of variables
-                    tens_seconds_action.setImageResource(R.drawable.dash);
-                    seconds_action.setImageResource(R.drawable.dash);
-                    tenths_of_seconds_action.setImageResource(R.drawable.dash);
-                    actionSeparator.setImageResource(R.drawable.middle_dot);
-
-                    previousActionTensSeconds = -1;
-                    previousActionTenthsSeconds = -1;
-                    previousActionSeconds = -1;
+                    dashAction();
                 } else {
-                    if (previousActionTensSeconds != timerData.getActionSecondsTens()) {
-                        previousActionTensSeconds = timerData.getActionSecondsTens();
-                        tens_seconds_action.setImageResource(digitsID[previousActionTensSeconds]);
+                    if (timerData.getActionSecondsTens() == 0 &&
+                            timerData.getActionSeconds() == 0 &&
+                            timerData.getActionSecondsTenths() == 0) {
+                        //Action finished. Display dashes, refactor pause button
+                        dashAction();
+                        actionFinishedRefactorPauseButton();
+                    } else {
+                        if (previousActionTensSeconds != timerData.getActionSecondsTens()) {
+                            previousActionTensSeconds = timerData.getActionSecondsTens();
+                            tens_seconds_action.setImageResource(digitsID[previousActionTensSeconds]);
+                        }
+                        if (previousActionSeconds != timerData.getActionSeconds()) {
+                            previousActionSeconds = timerData.getActionSeconds();
+                            seconds_action.setImageResource(digitsID[previousActionSeconds]);
+                        }
+                        if (previousActionTenthsSeconds != timerData.getActionSecondsTenths()) {
+                            previousActionTenthsSeconds = timerData.getActionSecondsTenths();
+                            tenths_of_seconds_action.setImageResource(digitsID[previousActionTenthsSeconds]);
+                        }
+                        actionSeparator.setImageResource(R.drawable.dot);
                     }
-                    if (previousActionSeconds != timerData.getActionSeconds()) {
-                        previousActionSeconds = timerData.getActionSeconds();
-                        seconds_action.setImageResource(digitsID[previousActionSeconds]);
-                    }
-                    if (previousActionTenthsSeconds != timerData.getActionSecondsTenths()) {
-                        previousActionTenthsSeconds = timerData.getActionSecondsTenths();
-                        tenths_of_seconds_action.setImageResource(digitsID[previousActionTenthsSeconds]);
-                    }
-                    actionSeparator.setImageResource(R.drawable.dot);
+
                 }
             }
         }
+    }
+
+    private void resetTimerAndButtons() {
+        //stop countdown
+        countDownTimer.cancel();
+        countDownTimer = null;
+
+        //reset buttons
+        start_pause_resume.setId(R.id.start_pause_resume_button);
+        start_pause_resume.setImageResource(R.drawable.start);
+
+        stop.setEnabled(false);
+        stop.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
+
+        reset14.setEnabled(false);
+        reset14.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
+
+        reset24.setEnabled(false);
+        reset24.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.dark_grey));
+    }
+
+    private void resetVariablesForRefreshes() {
+        previousPeriodTensMinutes = -1;
+        previousPeriodMinutes = -1;
+        previousPeriodTensSeconds = -1;
+        previousPeriodSeconds = -1;
+        previousActionTensSeconds = -1;
+        previousActionSeconds = -1;
+        previousActionTenthsSeconds = -1;
+    }
+
+    private void actionFinishedRefactorPauseButton() {
+        start_pause_resume.setId(R.id.resume);
+        start_pause_resume.setImageResource(R.drawable.start);
+        start_pause_resume.setEnabled(false);
+        start_pause_resume.setColorFilter(ContextCompat.getColor(this, R.color.dark_grey));
+    }
+
+    private void dashAction() {
+        tens_seconds_action.setImageResource(R.drawable.dash);
+        seconds_action.setImageResource(R.drawable.dash);
+        tenths_of_seconds_action.setImageResource(R.drawable.dash);
+        actionSeparator.setImageResource(R.drawable.middle_dot);
+
+        previousActionTensSeconds = -1;
+        previousActionTenthsSeconds = -1;
+        previousActionSeconds = -1;
     }
 }
