@@ -1,0 +1,13 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="com.example.paxilpaz.countdowntimer.TimerSettings$PeriodPreferences"
+        android:title="@string/pref_header_period" />
+
+    <header
+        android:fragment="com.example.paxilpaz.countdowntimer.TimerSettings$ShotClockPreferences"
+        android:title="@string/pref_header_shot_clock" />
+
+</preference-headers>

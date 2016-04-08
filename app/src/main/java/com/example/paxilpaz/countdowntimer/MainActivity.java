@@ -1,6 +1,9 @@
 package com.example.paxilpaz.countdowntimer;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         R.drawable.digit_7,
                                         R.drawable.digit_8,
                                         R.drawable.digit_9};
+    private TextView textView;
 
     //Period ImageViews
     private ImageView tens_minutes;
@@ -91,6 +96,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Getting TimerData and adding this activity as Observer
         timerData = TimerData.getInstance(this);
         timerData.addObserver(this);
+
+
+        textView = (TextView)findViewById(R.id.textView);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        textView.setText(Boolean.toString(preferences.getBoolean(getString(R.string.preference_shot_clock_recycle_offensive_rebound),true)));
+
     }
 
     @Override
@@ -109,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(getApplicationContext(), TimerSettings.class));
             return true;
         }
 

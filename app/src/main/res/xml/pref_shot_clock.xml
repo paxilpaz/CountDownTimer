@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="24"
+        android:entries="@array/pref_shot_clock_duration_list_titles"
+        android:entryValues="@array/pref_shot_clock_duration_list_values"
+        android:key="@string/preference_shot_clock_duration"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_shot_clock_duration" />
+
+    <!-- A 'parent' preference, which enables/disables child preferences (below)
+         when checked/unchecked. -->
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/preference_shot_clock_recycle_offensive_rebound"
+        android:title="@string/pref_title_shot_clock_recycle_offensive_rebound" />
+
+    <ListPreference
+        android:defaultValue="14"
+        android:dependency="@string/preference_shot_clock_recycle_offensive_rebound"
+        android:entries="@array/pref_shot_clock_recycle_duration_list_titles"
+        android:entryValues="@array/pref_shot_clock_recycle_duration_list_values"
+        android:key="@string/preference_shot_clock_recycle_duration"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_shot_clock_recycle_duration" />
+
+</PreferenceScreen>
