@@ -10,7 +10,7 @@
         android:title="@string/pref_title_number_of_periods" />
 
     <ListPreference
-        android:defaultValue="10"
+        android:defaultValue="10:00"
         android:entries="@array/pref_duration_of_periods_list_titles"
         android:entryValues="@array/pref_duration_of_periods_list_values"
         android:key="@string/preference_period_duration_of_periods"
@@ -19,7 +19,7 @@
         android:title="@string/pref_title_duration_of_periods" />
 
     <ListPreference
-        android:defaultValue="5"
+        android:defaultValue="5:00"
         android:entries="@array/pref_duration_of_extra_periods_list_titles"
         android:entryValues="@array/pref_duration_of_extra_periods_list_values"
         android:key="@string/preference_period_duration_of_extra_periods"

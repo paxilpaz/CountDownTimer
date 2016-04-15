@@ -50,6 +50,8 @@ public class TimerData extends Observable {
     public static TimerData getInstance(Context context) {
         if (instance == null)
             instance = new TimerData(context);
+        else
+            instance.getTimersDurationFromPreferences();
         return instance;
     }
 
@@ -64,14 +66,14 @@ public class TimerData extends Observable {
     private void getTimersDurationFromPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        String periodDurationString = preferences.getString(context.getResources().getString(R.string.period_duration_setting),
-                context.getResources().getString(R.string.period_duration_default_setting));
+        String periodDurationString = preferences.getString(context.getResources().getString(R.string.preference_period_duration_of_periods),
+                context.getResources().getString(R.string.preference_period_duration_default_setting));
         String periodsMinutesSeconds[] = periodDurationString.split(":");
         periodTime = Integer.parseInt(periodsMinutesSeconds[0]) * SECS_IN_MIN + Integer.parseInt(periodsMinutesSeconds[1]);
 
 
-        String actionDurationString = preferences.getString(context.getResources().getString(R.string.action_duration_setting),
-                context.getResources().getString(R.string.action_duration_default_setting));
+        String actionDurationString = preferences.getString(context.getResources().getString(R.string.preference_shot_clock_duration),
+                context.getResources().getString(R.string.preference_shot_clock_duration_default_setting));
         actionTime = Integer.parseInt(actionDurationString);
     }
 

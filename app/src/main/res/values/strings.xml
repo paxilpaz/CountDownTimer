@@ -2,13 +2,6 @@
     <string name="app_name">CountDownTimer</string>
     <string name="action_settings">Settings</string>
 
-    <string name="period_duration_setting" translatable="false">period_duration</string>
-    <string name="period_duration_setting_title" translatable="false">Period</string>
-    <string name="period_duration_default_setting" translatable="false">1:10</string>
-
-    <string name="action_duration_setting" translatable="false">action_duration</string>
-    <string name="action_duration_setting_title" translatable="false">Action</string>
-    <string name="action_duration_default_setting" translatable="false">24</string>
     <string name="title_activity_timer_settings">Timer Settings</string>
 
     <!-- Strings related to Settings -->
@@ -28,6 +21,7 @@
     </string-array>
 
     <string name="pref_title_duration_of_periods">Duration of periods</string>
+    <string name="preference_period_duration_default_setting" translatable="false">1:10</string>
     <string name="preference_period_duration_of_periods">preference_period_duration_of_periods</string>
     <string-array name="pref_duration_of_periods_list_titles">
         <item>8 minutes</item>
@@ -36,10 +30,10 @@
         <item>20 minutes</item>
     </string-array>
     <string-array name="pref_duration_of_periods_list_values">
-        <item>8</item>
-        <item>10</item>
-        <item>12</item>
-        <item>20</item>
+        <item>8:00</item>
+        <item>10:00</item>
+        <item>12:00</item>
+        <item>20:00</item>
     </string-array>
 
     <string name="pref_title_duration_of_extra_periods">Duration of extra periods</string>
@@ -49,14 +43,15 @@
         <item>6 minutes</item>
     </string-array>
     <string-array name="pref_duration_of_extra_periods_list_values">
-        <item>5</item>
-        <item>6</item>
+        <item>5:00</item>
+        <item>6:00</item>
     </string-array>
 
     <!-- Action settings -->
     <string name="pref_header_shot_clock">Shot clock settings</string>
 
     <string name="pref_title_shot_clock_duration">Shot clock duration</string>
+    <string name="preference_shot_clock_duration_default_setting" translatable="false">24</string>
     <string name="preference_shot_clock_duration">preference_shot_clock_duration</string>
     <string-array name="pref_shot_clock_duration_list_titles">
         <item>24 seconds</item>

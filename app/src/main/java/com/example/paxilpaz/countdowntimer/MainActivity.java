@@ -7,12 +7,16 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -36,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         R.drawable.digit_7,
                                         R.drawable.digit_8,
                                         R.drawable.digit_9};
-    private TextView textView;
 
     //Period ImageViews
     private ImageView tens_minutes;
@@ -93,15 +96,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Setting variables to -1 when creating the Activity
         resetVariablesForRefreshes();
 
-        //Getting TimerData and adding this activity as Observer
-        timerData = TimerData.getInstance(this);
-        timerData.addObserver(this);
-
-
-        textView = (TextView)findViewById(R.id.textView);
+        //Retrieve preferences and set them according to the default or previously selected values
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        textView.setText(Boolean.toString(preferences.getBoolean(getString(R.string.preference_shot_clock_recycle_offensive_rebound),true)));
+        String duration_from_preferences = preferences.getString(getString(R.string.preference_period_duration_of_periods),
+                getString(R.string.preference_period_duration_default_setting));
+        String[] splittedDuration = duration_from_preferences.split(":");
 
+        int tens_of_mins_starting_app = Integer.parseInt(splittedDuration[0]) / 10;
+        int mins_starting_app = Integer.parseInt(splittedDuration[0]) % 10;
+        int tens_of_secs_starting_app = Integer.parseInt(splittedDuration[1]) / 10;
+        int secs_starting_app = Integer.parseInt(splittedDuration[1]) % 10;
+
+        String shot_clock_duration_string = preferences.getString(getString(R.string.preference_shot_clock_duration),
+                getString(R.string.preference_shot_clock_duration_default_setting));
+        int shot_clock_duration = Integer.parseInt(shot_clock_duration_string);
+
+        tens_minutes.setImageResource(digitsID[tens_of_mins_starting_app]);
+        minutes.setImageResource(digitsID[mins_starting_app]);
+        tens_seconds.setImageResource(digitsID[tens_of_secs_starting_app]);
+        seconds.setImageResource(digitsID[secs_starting_app]);
+
+        tens_seconds_action.setImageResource(digitsID[shot_clock_duration / 10]);
+        seconds_action.setImageResource(digitsID[shot_clock_duration % 10]);
+
+
+        //Apply double and single click listener to the shotclock
+        RelativeLayout shot_clock_layout = (RelativeLayout)findViewById(R.id.action_timer);
+        shot_clock_layout.setOnClickListener(new DoubleClickListener() {
+            @Override
+            public void onDoubleClick(View view) {
+                countDownTimer.reset14();
+                start_pause_resume.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                start_pause_resume.setEnabled(true);
+                if (start_pause_resume.getId() == R.id.resume) {
+                    //Timer was paused... We will update the action timer in order to show 14,0
+                    resetActionTimerToSeconds(1, 4);
+                }
+            }
+
+            @Override
+            public void onSingleClick(View view) {
+                countDownTimer.reset24();
+                start_pause_resume.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                start_pause_resume.setEnabled(true);
+                if (start_pause_resume.getId() == R.id.resume) {
+                    //Timer was paused... We will update the action timer in order to show 24,0
+                    resetActionTimerToSeconds(2, 4);
+                }
+            }
+        });
+        shot_clock_layout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getApplicationContext(),"Long clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -131,6 +181,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_pause_resume_button:
+                //Getting TimerData and adding this activity as Observer
+                timerData = TimerData.getInstance(this);
+                timerData.addObserver(this);
+
                 countDownTimer = new BasketballCountDownTimer(this);
                 countDownTimer.start();
                 //handle buttons
@@ -170,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 start_pause_resume.setColorFilter(ContextCompat.getColor(this, R.color.black));
                 start_pause_resume.setEnabled(true);
                 if (start_pause_resume.getId() == R.id.resume) {
-                    //Timer was paused... We will update the action timer in order to show 14,0
+                    //Timer was paused... We will update the action timer in order to show 24,0
                     resetActionTimerToSeconds(2, 4);
                 }
                 break;
