@@ -23,7 +23,8 @@ public class TimerData extends Observable {
 
     //Durations (in seconds)
     private int periodTime;
-    private int actionTime;
+    private int shotClockTime;
+    private int shotClockTimeOffensiveRebound;
 
     //Periods instants
     private int periodMinutesTens;
@@ -72,9 +73,17 @@ public class TimerData extends Observable {
         periodTime = Integer.parseInt(periodsMinutesSeconds[0]) * SECS_IN_MIN + Integer.parseInt(periodsMinutesSeconds[1]);
 
 
-        String actionDurationString = preferences.getString(context.getResources().getString(R.string.preference_shot_clock_duration),
+        String shotClockDurationStirng = preferences.getString(context.getResources().getString(R.string.preference_shot_clock_duration),
                 context.getResources().getString(R.string.preference_shot_clock_duration_default_setting));
-        actionTime = Integer.parseInt(actionDurationString);
+        shotClockTime = Integer.parseInt(shotClockDurationStirng);
+
+        String shotClockOffensiveReboundDurationString;
+        if (preferences.getBoolean(context.getString(R.string.preference_shot_clock_recycle_offensive_rebound),
+                true)) {
+            shotClockOffensiveReboundDurationString = preferences.getString(context.getString(R.string.preference_shot_clock_recycle_duration),
+                    context.getString(R.string.preference_shot_clock_recycle_duration_default_setting));
+            shotClockTimeOffensiveRebound = Integer.parseInt(shotClockOffensiveReboundDurationString);
+        }
     }
 
     /**
@@ -145,7 +154,7 @@ public class TimerData extends Observable {
      *
      * @return the period duration for the game in seconds
      */
-    public long getPeriodTime() {
+    public int getPeriodTime() {
         return periodTime;
     }
 
@@ -153,9 +162,11 @@ public class TimerData extends Observable {
      *
      * @return the action duration for the game in seconds
      */
-    public long getActionTime() {
-        return actionTime;
+    public int getShotClockTime() {
+        return shotClockTime;
     }
+
+    public int getShotClockTimeOffensiveRebound() { return shotClockTimeOffensiveRebound; }
 
     public int getPeriodMinutesTens() {
         return periodMinutesTens;

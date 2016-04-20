@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.widget.ImageView;
 
 /**
  * Created by paxilpaz on 05/04/16.
@@ -13,20 +12,9 @@ public class BasketballCountDownTimer {
 
     //Constants
     private static final long MSEC_IN_SEC = 1000;
-
-
+    
     //The instance of TimerData
     private TimerData timerData;
-
-    private static final int FOURTEEN = 14000;
-
-    private static final long MINUTE = 60000;
-
-    //ImageViews to update (Period)
-    private ImageView tensOfMinutes, minutes, tensOfSecondsPeriod, secondsPeriod, separatorPeriod;
-
-    //ImageViews to update (Action)
-    private ImageView tensOfSecondsAction, secondsAction, separatorAction, tenthsOfSeconds;
 
     //10 msec = 0.01sec = shortest time unit in Basketball
     private static final long TICK = 10;
@@ -35,20 +23,21 @@ public class BasketballCountDownTimer {
     private static final int START = 1;
     private static final int PAUSE = 2;
     private static final int RESUME = 3;
-    private static final int RESET14 = 4;
-    private static final int RESET24 = 5;
+    private static final int RESET_OFFENSIVE_REBOUND = 4;
+    private static final int RESET_ACTION = 5;
 
     //Needed to configure the proper timers according to the leagues
-    private long actionTime;
+    private long shotClockTime;
+    private long shotClockOffensiveReboundTime;
     private long periodTime;
 
     //Remaining time for action/period
-    private long remainingActionTime;
+    private long remainingShotClockTime;
     private long remainingPeriodTime;
 
     //Stop time for action/period
     private long stopTimePeriod;
-    private long stopTimeAction;
+    private long stopTimeShotClock;
 
     /**
      * boolean representing if the timer was cancelled
@@ -59,7 +48,8 @@ public class BasketballCountDownTimer {
 
         timerData = TimerData.getInstance(context);
 
-        actionTime = timerData.getActionTime() * MSEC_IN_SEC;
+        shotClockTime = timerData.getShotClockTime() * MSEC_IN_SEC;
+        shotClockOffensiveReboundTime = timerData.getShotClockTimeOffensiveRebound() * MSEC_IN_SEC;
         periodTime = timerData.getPeriodTime() * MSEC_IN_SEC;
     }
 
@@ -77,8 +67,8 @@ public class BasketballCountDownTimer {
         mHandler.removeMessages(START);
         mHandler.removeMessages(PAUSE);
         mHandler.removeMessages(RESUME);
-        mHandler.removeMessages(RESET14);
-        mHandler.removeMessages(RESET24);
+        mHandler.removeMessages(RESET_OFFENSIVE_REBOUND);
+        mHandler.removeMessages(RESET_ACTION);
     }
 
     /**
@@ -93,7 +83,7 @@ public class BasketballCountDownTimer {
         }
         //Compute Stop time for both action and period timers
         stopTimePeriod = SystemClock.elapsedRealtime() + periodTime;
-        stopTimeAction = SystemClock.elapsedRealtime() + actionTime;
+        stopTimeShotClock = SystemClock.elapsedRealtime() + shotClockTime;
         mHandler.sendMessage(mHandler.obtainMessage(START));
     }
 
@@ -105,8 +95,8 @@ public class BasketballCountDownTimer {
         }
         mHandler.removeMessages(START);
         mHandler.removeMessages(RESUME);
-        mHandler.removeMessages(RESET14);
-        mHandler.removeMessages(RESET24);
+        mHandler.removeMessages(RESET_OFFENSIVE_REBOUND);
+        mHandler.removeMessages(RESET_ACTION);
         mHandler.sendMessage(mHandler.obtainMessage(PAUSE));
     }
 
@@ -118,19 +108,19 @@ public class BasketballCountDownTimer {
         }
         mHandler.removeMessages(START);
         mHandler.removeMessages(PAUSE);
-        mHandler.removeMessages(RESET14);
-        mHandler.removeMessages(RESET24);
+        mHandler.removeMessages(RESET_OFFENSIVE_REBOUND);
+        mHandler.removeMessages(RESET_ACTION);
         mHandler.sendMessage(mHandler.obtainMessage(RESUME));
     }
 
     //Resets the timer
     public synchronized final void reset14() {
-        mHandler.sendMessage(mHandler.obtainMessage(RESET14));
+        mHandler.sendMessage(mHandler.obtainMessage(RESET_OFFENSIVE_REBOUND));
     }
 
     //Resets the timer
     public synchronized final void reset24() {
-        mHandler.sendMessage(mHandler.obtainMessage(RESET24));
+        mHandler.sendMessage(mHandler.obtainMessage(RESET_ACTION));
     }
 
 
@@ -144,24 +134,24 @@ public class BasketballCountDownTimer {
 
                 switch (msg.what) {
                     case PAUSE:
-                        remainingActionTime = stopTimeAction - SystemClock.elapsedRealtime();
+                        remainingShotClockTime = stopTimeShotClock - SystemClock.elapsedRealtime();
                         remainingPeriodTime = stopTimePeriod - SystemClock.elapsedRealtime();
                         break;
 
-                    case RESET14:
-                        stopTimeAction = SystemClock.elapsedRealtime() + FOURTEEN;
-                        remainingActionTime = FOURTEEN;
-                        removeMessages(RESET14);
+                    case RESET_OFFENSIVE_REBOUND:
+                        stopTimeShotClock = SystemClock.elapsedRealtime() + shotClockOffensiveReboundTime;
+                        remainingShotClockTime = shotClockOffensiveReboundTime;
+                        removeMessages(RESET_OFFENSIVE_REBOUND);
                         break;
 
-                    case RESET24:
-                        stopTimeAction = SystemClock.elapsedRealtime() + actionTime;
-                        remainingActionTime = actionTime;
-                        removeMessages(RESET24);
+                    case RESET_ACTION:
+                        stopTimeShotClock = SystemClock.elapsedRealtime() + shotClockTime;
+                        remainingShotClockTime = shotClockTime;
+                        removeMessages(RESET_ACTION);
                         break;
 
                     case RESUME:
-                        stopTimeAction = SystemClock.elapsedRealtime() + remainingActionTime;
+                        stopTimeShotClock = SystemClock.elapsedRealtime() + remainingShotClockTime;
                         stopTimePeriod = SystemClock.elapsedRealtime() + remainingPeriodTime;
 
                     case START:
@@ -170,9 +160,9 @@ public class BasketballCountDownTimer {
                         }
 
                         remainingPeriodTime = stopTimePeriod - SystemClock.elapsedRealtime();
-                        remainingActionTime = stopTimeAction - SystemClock.elapsedRealtime();
+                        remainingShotClockTime = stopTimeShotClock - SystemClock.elapsedRealtime();
 
-                        if (remainingActionTime <= 0) {
+                        if (remainingShotClockTime <= 0) {
                             pause();
                             break;
                         }
@@ -185,7 +175,7 @@ public class BasketballCountDownTimer {
                             sendMessageDelayed(obtainMessage(START), remainingPeriodTime);
                         } else {
                             long lastTickStart = SystemClock.elapsedRealtime();
-                            timerData.updateData(remainingPeriodTime, remainingActionTime);
+                            timerData.updateData(remainingPeriodTime, remainingShotClockTime);
 
                             // take into account user's onTick taking time to execute
                             long delay = lastTickStart + TICK - SystemClock.elapsedRealtime();

@@ -47,7 +47,7 @@
         <item>6:00</item>
     </string-array>
 
-    <!-- Action settings -->
+    <!-- Shot Clock Settings -->
     <string name="pref_header_shot_clock">Shot clock settings</string>
 
     <string name="pref_title_shot_clock_duration">Shot clock duration</string>
@@ -69,6 +69,7 @@
 
     <string name="pref_title_shot_clock_recycle_duration">Recycled shot clock duration</string>
     <string name="preference_shot_clock_recycle_duration">preference_shot_clock_recycle_duration</string>
+    <string name="preference_shot_clock_recycle_duration_default_setting" translatable="false">14</string>
     <string-array name="pref_shot_clock_recycle_duration_list_titles">
         <item>14 seconds</item>
         <item>20 seconds</item>
