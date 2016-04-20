@@ -3,6 +3,7 @@ package com.example.paxilpaz.countdowntimer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.Observable;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,9 @@ public class TimerData extends Observable {
 
     //Number of milliseconds in a minute
     private static final long MSEC_IN_MIN = 60000;
+
+    //Paused variable
+    private boolean isPaused = true;
 
     //Durations (in seconds)
     private int periodTime;
@@ -42,6 +46,8 @@ public class TimerData extends Observable {
     //Context
     private Context context;
 
+    //CountDownTimer
+    private BasketballCountDownTimer countDownTimer;
 
     /**
      * Gets the only copy of TimerData within the application
@@ -203,4 +209,38 @@ public class TimerData extends Observable {
     public int getActionSecondsTenths() {
         return actionSecondsTenths;
     }
+
+    public void startTimer() {
+        countDownTimer = new BasketballCountDownTimer(context);
+        countDownTimer.start();
+        isPaused = false;
+    }
+
+    public void pauseTimer() {
+        countDownTimer.pause();
+        isPaused = true;
+        Log.d(TimerData.class.getSimpleName(), " pauseTimer " + isPaused);
+    }
+
+    public void resumeTimer() {
+        countDownTimer.resume();
+        isPaused = false;
+        Log.d(TimerData.class.getSimpleName(), " resumeTimer " + isPaused);
+    }
+
+    public void resetOffensiveRebound() {
+        countDownTimer.reset_offensive_rebound();
+    }
+
+    public void resetShotClock() {
+        countDownTimer.reset_shot_clock();
+    }
+
+    public void cancelTimer() {
+        countDownTimer.cancel();
+        countDownTimer = null;
+        isPaused = true;
+    }
+
+    public boolean isTimerPaused() { return isPaused; }
 }

@@ -7,15 +7,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Observable;
@@ -23,7 +20,7 @@ import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, Observer {
 
-    private BasketballCountDownTimer countDownTimer;
+//    private BasketballCountDownTimer countDownTimer;
     private TimerData timerData;
     private ImageButton reset14;
     private ImageButton stop;
@@ -40,25 +37,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         R.drawable.digit_7,
                                         R.drawable.digit_8,
                                         R.drawable.digit_9};
-
-    //Period ImageViews
-    private ImageView tens_minutes;
-    private ImageView tens_seconds;
-    private ImageView seconds;
-    private ImageView minutes;
-    private ImageView periodSeparator;
-
     //Action ImageViews
     private ImageView tens_seconds_action;
     private ImageView seconds_action;
     private ImageView actionSeparator;
     private ImageView tenths_of_seconds_action;
-
-    //variables to store previous state of digits and avoid updating them if not necessary
-    private int previousPeriodTensMinutes;
-    private int previousPeriodMinutes;
-    private int previousPeriodTensSeconds;
-    private int previousPeriodSeconds;
 
     private int previousActionTensSeconds;
     private int previousActionSeconds;
@@ -72,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         //Get buttons
         start_pause_resume = (ImageButton)findViewById(R.id.start_pause_resume_button);
         reset14 = (ImageButton)findViewById(R.id.reset_14_button);
@@ -82,12 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reset14.setOnClickListener(this);
         reset24.setOnClickListener(this);
         stop.setOnClickListener(this);
-        //Get Period ImageViews
-        tens_minutes = (ImageView)findViewById(R.id.tens_minutes);
-        tens_seconds = (ImageView)findViewById(R.id.tens_seconds_period);
-        seconds = (ImageView)findViewById(R.id.seconds_period);
-        minutes = (ImageView)findViewById(R.id.minutes);
-        periodSeparator = (ImageView)findViewById(R.id.colon);
         //Get Action ImageViews
         tens_seconds_action = (ImageView)findViewById(R.id.tens_seconds_action);
         seconds_action = (ImageView)findViewById(R.id.seconds_action);
@@ -111,11 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getString(R.string.preference_shot_clock_duration_default_setting));
         int shot_clock_duration = Integer.parseInt(shot_clock_duration_string);
 
-        tens_minutes.setImageResource(digitsID[tens_of_mins_starting_app]);
-        minutes.setImageResource(digitsID[mins_starting_app]);
-        tens_seconds.setImageResource(digitsID[tens_of_secs_starting_app]);
-        seconds.setImageResource(digitsID[secs_starting_app]);
-
         tens_seconds_action.setImageResource(digitsID[shot_clock_duration / 10]);
         seconds_action.setImageResource(digitsID[shot_clock_duration % 10]);
 
@@ -125,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         shot_clock_layout.setOnClickListener(new DoubleClickListener() {
             @Override
             public void onDoubleClick(View view) {
-                countDownTimer.reset14();
+                //countDownTimer.reset_offensive_rebound();
                 start_pause_resume.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black));
                 start_pause_resume.setEnabled(true);
                 if (start_pause_resume.getId() == R.id.resume) {
@@ -136,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onSingleClick(View view) {
-                countDownTimer.reset24();
+                //countDownTimer.reset_shot_clock();
                 start_pause_resume.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black));
                 start_pause_resume.setEnabled(true);
                 if (start_pause_resume.getId() == R.id.resume) {
@@ -182,11 +156,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.start_pause_resume_button:
                 //Getting TimerData and adding this activity as Observer
+                //countDownTimer = new BasketballCountDownTimer(this);
+
                 timerData = TimerData.getInstance(this);
                 timerData.addObserver(this);
+                timerData.startTimer();
 
-                countDownTimer = new BasketballCountDownTimer(this);
-                countDownTimer.start();
+                //countDownTimer.start();
                 //handle buttons
                 start_pause_resume.setImageResource(R.drawable.pause);
                 start_pause_resume.setId(R.id.pause);
@@ -203,15 +179,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.pause:
                 start_pause_resume.setId(R.id.resume);
                 start_pause_resume.setImageResource(R.drawable.start);
-                countDownTimer.pause();
+                //countDownTimer.pause();
+                timerData.pauseTimer();
                 break;
             case R.id.resume:
                 start_pause_resume.setId(R.id.pause);
                 start_pause_resume.setImageResource(R.drawable.pause);
-                countDownTimer.resume();
+                //countDownTimer.resume();
+                timerData.resumeTimer();
                 break;
             case  R.id.reset_14_button:
-                countDownTimer.reset14();
+                //countDownTimer.reset_offensive_rebound();
+                timerData.resetOffensiveRebound();
                 start_pause_resume.setColorFilter(ContextCompat.getColor(this, R.color.black));
                 start_pause_resume.setEnabled(true);
                 if (start_pause_resume.getId() == R.id.resume) {
@@ -220,7 +199,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case  R.id.reset_24_button:
-                countDownTimer.reset24();
+                //countDownTimer.reset_shot_clock();
+                timerData.resetShotClock();
                 start_pause_resume.setColorFilter(ContextCompat.getColor(this, R.color.black));
                 start_pause_resume.setEnabled(true);
                 if (start_pause_resume.getId() == R.id.resume) {
@@ -252,12 +232,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (observable instanceof TimerData) {
             //Update the GUI, starting with the period timer
             if (timerData.getPeriodMinutesTens() == Integer.MIN_VALUE) {
-                //In this case, period is finished
-                tens_minutes.setImageResource(R.drawable.dash);
-                minutes.setImageResource(R.drawable.dash);
-                periodSeparator.setImageResource(R.drawable.middle_dot);
-                tens_seconds.setImageResource(R.drawable.dash);
-                seconds.setImageResource(R.drawable.dash);
 
                 tens_seconds_action.setImageResource(R.drawable.dash);
                 seconds_action.setImageResource(R.drawable.dash);
@@ -265,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tenths_of_seconds_action.setImageResource(R.drawable.dash);
 
                 actionSeparator.setImageResource(R.drawable.middle_dot);
-                periodSeparator.setImageResource(R.drawable.middle_dot);
 
                 resetVariablesForRefreshes();
 
@@ -273,24 +246,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             } else if (timerData.getPeriodMinutesTens() == -1) {
                 //In this case, we are in the last minute
-
-                //refreshing the period timer
-                if (previousPeriodTensMinutes != timerData.getPeriodSecondsTens()) {
-                    previousPeriodTensMinutes = timerData.getPeriodSecondsTens();
-                    tens_minutes.setImageResource(digitsID[previousPeriodTensMinutes]);
-                }
-                if (previousPeriodMinutes != timerData.getPeriodSeconds()) {
-                    previousPeriodMinutes = timerData.getPeriodSeconds();
-                    minutes.setImageResource(digitsID[previousPeriodMinutes]);
-                }
-                if (previousPeriodTensSeconds != timerData.getPeriodSecondsTenths()) {
-                    previousPeriodTensSeconds = timerData.getPeriodSecondsTenths();
-                    tens_seconds.setImageResource(digitsID[previousPeriodTensSeconds]);
-                }
-                previousPeriodSeconds = timerData.getPeriodSecondsHundreths();
-                seconds.setImageResource(digitsID[previousPeriodSeconds]);
-
-                periodSeparator.setImageResource(R.drawable.dot);
 
                 //refreshing the action timer
                 if (timerData.getActionSecondsTens() == -1) {
@@ -321,25 +276,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } else {
                 //Normal behaviour
-                //refreshing the period timer
-                if (previousPeriodTensMinutes != timerData.getPeriodMinutesTens()) {
-                    previousPeriodTensMinutes = timerData.getPeriodMinutesTens();
-                    tens_minutes.setImageResource(digitsID[previousPeriodTensMinutes]);
-                }
-                if (previousPeriodMinutes != timerData.getPeriodMinutes()) {
-                    previousPeriodMinutes = timerData.getPeriodMinutes();
-                    minutes.setImageResource(digitsID[previousPeriodMinutes]);
-                }
-                if (previousPeriodTensSeconds != timerData.getPeriodSecondsTens()) {
-                    previousPeriodTensSeconds = timerData.getPeriodSecondsTens();
-                    tens_seconds.setImageResource(digitsID[previousPeriodTensSeconds]);
-                }
-                if (previousPeriodSeconds != timerData.getPeriodSeconds()) {
-                    previousPeriodSeconds = timerData.getPeriodSeconds();
-                    seconds.setImageResource(digitsID[previousPeriodSeconds]);
-                }
-
-                periodSeparator.setImageResource(R.drawable.colon);
 
                 //refreshing the action timer
                 if (timerData.getActionSecondsTens() == -1) {
@@ -375,9 +311,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void resetTimerAndButtons() {
         //stop countdown
-        countDownTimer.cancel();
-        countDownTimer = null;
-
+        //countDownTimer.cancel();
+        //countDownTimer = null;
+        timerData.cancelTimer();
         //reset buttons
         start_pause_resume.setId(R.id.start_pause_resume_button);
         start_pause_resume.setImageResource(R.drawable.start);
@@ -393,10 +329,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void resetVariablesForRefreshes() {
-        previousPeriodTensMinutes = -1;
-        previousPeriodMinutes = -1;
-        previousPeriodTensSeconds = -1;
-        previousPeriodSeconds = -1;
         previousActionTensSeconds = -1;
         previousActionSeconds = -1;
         previousActionTenthsSeconds = -1;

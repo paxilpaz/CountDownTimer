@@ -13,67 +13,9 @@
     tools:showIn="@layout/activity_main"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/period_timer"
-        android:backgroundTint="@color/black"
-        android:background="@color/black">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/colon"
-            android:src="@drawable/colon"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:tint="@color/green"
-            android:layout_margin="8dp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tens_seconds_period"
-            android:src="@drawable/digit_0"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/colon"
-            android:layout_margin="8dp"
-            android:tint="@color/green"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/seconds_period"
-            android:src="@drawable/digit_0"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/tens_seconds_period"
-            android:layout_margin="8dp"
-            android:tint="@color/green"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/minutes"
-            android:src="@drawable/digit_0"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@id/colon"
-            android:layout_margin="8dp"
-            android:tint="@color/green"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tens_minutes"
-            android:src="@drawable/digit_1"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false"
-            android:layout_toStartOf="@id/minutes"
-            android:layout_margin="8dp"
-            android:tint="@color/green"/>
-
-
-    </RelativeLayout>
+    <com.example.paxilpaz.countdowntimer.PeriodTimer android:id="@+id/period_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <RelativeLayout
         android:orientation="horizontal"

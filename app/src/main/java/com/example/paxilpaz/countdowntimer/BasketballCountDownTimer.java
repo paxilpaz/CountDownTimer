@@ -58,7 +58,6 @@ public class BasketballCountDownTimer {
         cancel();
     }
 
-
     /**
      * Cancel the countdown.
      */
@@ -114,12 +113,12 @@ public class BasketballCountDownTimer {
     }
 
     //Resets the timer
-    public synchronized final void reset14() {
+    public synchronized final void reset_offensive_rebound() {
         mHandler.sendMessage(mHandler.obtainMessage(RESET_OFFENSIVE_REBOUND));
     }
 
     //Resets the timer
-    public synchronized final void reset24() {
+    public synchronized final void reset_shot_clock() {
         mHandler.sendMessage(mHandler.obtainMessage(RESET_ACTION));
     }
 
@@ -136,6 +135,7 @@ public class BasketballCountDownTimer {
                     case PAUSE:
                         remainingShotClockTime = stopTimeShotClock - SystemClock.elapsedRealtime();
                         remainingPeriodTime = stopTimePeriod - SystemClock.elapsedRealtime();
+
                         break;
 
                     case RESET_OFFENSIVE_REBOUND:
