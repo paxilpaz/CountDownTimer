@@ -2,22 +2,14 @@ package com.example.paxilpaz.countdowntimer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 
 import com.example.paxilpaz.countdowntimer.timer.TimerData;
 
-import java.util.Observable;
-import java.util.Observer;
-
 public class MainActivity extends AppCompatActivity {
-
-    private TimerData timerData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

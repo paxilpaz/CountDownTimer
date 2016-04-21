@@ -45,9 +45,10 @@ public class TimerButtonsLayout extends LinearLayout implements View.OnClickList
     }
 
     private void init() {
+        setOnClickListener(this);
         //Layout inflating
         layoutInflater = LayoutInflater.from(getContext());
-        layoutInflater.inflate(R.layout.buttons_layout, this, true);
+        layoutInflater.inflate(R.layout.timer_buttons, this, true);
         //Timer Data
         timerData = TimerData.getInstance(getContext());
         timerData.addObserver(this);

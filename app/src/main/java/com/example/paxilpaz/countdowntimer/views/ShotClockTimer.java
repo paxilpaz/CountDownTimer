@@ -1,7 +1,9 @@
 package com.example.paxilpaz.countdowntimer.views;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,7 +12,6 @@ import android.widget.Toast;
 
 import com.example.paxilpaz.countdowntimer.R;
 import com.example.paxilpaz.countdowntimer.timer.TimerData;
-import com.example.paxilpaz.countdowntimer.views.listeners.DoubleClickListener;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -18,7 +19,7 @@ import java.util.Observer;
 /**
  * Created by paxilpaz on 21/04/16.
  */
-public class ShotClockTimer extends RelativeLayout implements View.OnLongClickListener, Observer {
+public class ShotClockTimer extends RelativeLayout implements View.OnLongClickListener, View.OnClickListener, Observer {
 
     private static final int digitsID[] = {R.drawable.digit_0,
             R.drawable.digit_1,
@@ -30,6 +31,10 @@ public class ShotClockTimer extends RelativeLayout implements View.OnLongClickLi
             R.drawable.digit_7,
             R.drawable.digit_8,
             R.drawable.digit_9};
+
+    private static final long DOUBLE_CLICK_TIME_DELTA = 300;
+
+    private long lastClickTime = 0;
 
     private TimerData timerData;
 
@@ -49,7 +54,6 @@ public class ShotClockTimer extends RelativeLayout implements View.OnLongClickLi
     public ShotClockTimer(Context context) {
         super(context);
         init();
-
     }
 
     public ShotClockTimer(Context context, AttributeSet attrs) {
@@ -63,6 +67,9 @@ public class ShotClockTimer extends RelativeLayout implements View.OnLongClickLi
     }
 
     private void init() {
+        //Registering the class to listen to click events
+        setOnClickListener(this);
+        setOnLongClickListener(this);
         //Inflate layout
         layoutInflater = LayoutInflater.from(getContext());
         layoutInflater.inflate(R.layout.shot_clock_timer, this, true);
@@ -74,43 +81,8 @@ public class ShotClockTimer extends RelativeLayout implements View.OnLongClickLi
         seconds_shot_clock = (ImageView)findViewById(R.id.seconds_action);
         shot_clock_separator = (ImageView)findViewById(R.id.dot);
         tenths_of_seconds_shot_clock = (ImageView)findViewById(R.id.tenth_of_seconds);
-
         //Setting variables to -1 when creating the Activity
         resetVariablesForRefreshes();
-
-        //Setting the click listener
-        setClickListener();
-    }
-
-    private void setClickListener() {
-        this.setOnClickListener(new DoubleClickListener() {
-            @Override
-            public void onDoubleClick(View view) {
-                //Reset shot clock rebound
-                timerData.resetOffensiveRebound();
-                if (timerData.isPaused()) {
-                    //Timer was paused... We will update the action timer in order to show 14,0
-                    resetActionTimerToSeconds(1, 4); //TODO reset to proper time
-                }
-            }
-
-            @Override
-            public void onSingleClick(View view) {
-                //Reset shot clock
-                timerData.resetShotClock();
-                if (timerData.isPaused()) {
-                    //Timer was paused... We will update the action timer in order to show 24,0
-                    resetActionTimerToSeconds(2, 4); //TODO reset to proper time
-                }
-            }
-        });
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        //TODO display a PopupDialog to set the ShotCLock Timer manually
-        Toast.makeText(getContext(),"Long clicked", Toast.LENGTH_SHORT).show();
-        return true;
     }
 
     @Override
@@ -218,4 +190,35 @@ public class ShotClockTimer extends RelativeLayout implements View.OnLongClickLi
         previousActionTenthsSeconds = -1;
         previousActionSeconds = -1;
     }
+
+    @Override
+    public void onClick(View view) {
+        long clickTime = SystemClock.currentThreadTimeMillis();
+        //TODO reset to proper time
+        if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+            //Reset shot clock rebound
+            timerData.resetOffensiveRebound();
+            if (timerData.isPaused()) {
+                //Timer was paused... We will update the action timer in order to show 14,0
+                resetActionTimerToSeconds(1, 4);
+            }
+        } else {
+            //Reset shot clock
+            timerData.resetShotClock();
+            if (timerData.isPaused()) {
+                //Timer was paused... We will update the action timer in order to show 24,0
+                resetActionTimerToSeconds(2, 4);
+            }
+        }
+        lastClickTime = clickTime;
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        //TODO display a PopupDialog to set the ShotCLock Timer manually
+        Toast.makeText(getContext(),"Long clicked", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+
 }

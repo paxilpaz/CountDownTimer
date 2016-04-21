@@ -2,11 +2,11 @@ package com.example.paxilpaz.countdowntimer.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.paxilpaz.countdowntimer.R;
 import com.example.paxilpaz.countdowntimer.timer.TimerData;
@@ -161,7 +161,11 @@ public class PeriodTimer extends RelativeLayout implements Observer, View.OnClic
 
     @Override
     public boolean onLongClick(View view) {
-        //TODO display a PopupDialog to manually set the PeriodTimer
-        return true;
+        if (timerData.isPaused()) {
+            Toast.makeText(getContext(), "Ciao1", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        Toast.makeText(getContext(), "Ciao2", Toast.LENGTH_SHORT).show();
+        return false;
     }
 }
