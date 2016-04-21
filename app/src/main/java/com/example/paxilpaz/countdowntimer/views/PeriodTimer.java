@@ -1,4 +1,4 @@
-package com.example.paxilpaz.countdowntimer;
+package com.example.paxilpaz.countdowntimer.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.example.paxilpaz.countdowntimer.R;
+import com.example.paxilpaz.countdowntimer.timer.TimerData;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -63,9 +66,10 @@ public class PeriodTimer extends RelativeLayout implements Observer, View.OnClic
         setOnClickListener(this);
         setOnLongClickListener(this);
         layoutInflater = LayoutInflater.from(getContext());
+        layoutInflater.inflate(R.layout.period_timer, this, true);
+        //Referencing to the TimerData
         timerData = TimerData.getInstance(getContext());
         timerData.addObserver(this);
-        layoutInflater.inflate(R.layout.period_timer, this, true);
         //Get Period ImageViews
         tens_minutes = (ImageView)findViewById(R.id.tens_minutes);
         tens_seconds = (ImageView)findViewById(R.id.tens_seconds_period);
@@ -147,8 +151,7 @@ public class PeriodTimer extends RelativeLayout implements Observer, View.OnClic
 
     @Override
     public void onClick(View view) {
-        Log.d(PeriodTimer.class.getSimpleName(), " paused? " + timerData.isTimerPaused());
-        if (timerData.isTimerPaused()) {
+        if (timerData.isPaused()) {
             timerData.resumeTimer();
         }
         else {
@@ -158,7 +161,7 @@ public class PeriodTimer extends RelativeLayout implements Observer, View.OnClic
 
     @Override
     public boolean onLongClick(View view) {
-
+        //TODO display a PopupDialog to manually set the PeriodTimer
         return true;
     }
 }

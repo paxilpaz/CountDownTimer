@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/shot_clock_timer"
+    android:backgroundTint="@color/black"
+    android:background="@color/black"
+    tools:showIn="@layout/content_main">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dot"
+        android:src="@drawable/dot"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:tint="@color/red"
+        android:layout_margin="8dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tenth_of_seconds"
+        android:src="@drawable/digit_0"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/dot"
+        android:layout_margin="8dp"
+        android:tint="@color/red" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seconds_action"
+        android:src="@drawable/digit_4"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/dot"
+        android:layout_margin="8dp"
+        android:tint="@color/red" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tens_seconds_action"
+        android:src="@drawable/digit_2"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_toStartOf="@+id/seconds_action"
+        android:layout_margin="8dp"
+        android:tint="@color/red" />
+
+</RelativeLayout>

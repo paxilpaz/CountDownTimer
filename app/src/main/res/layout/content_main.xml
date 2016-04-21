@@ -13,125 +13,20 @@
     tools:showIn="@layout/activity_main"
     android:orientation="vertical">
 
-    <com.example.paxilpaz.countdowntimer.PeriodTimer android:id="@+id/period_timer"
+    <com.example.paxilpaz.countdowntimer.views.PeriodTimer
+        android:id="@+id/period_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/action_timer"
-        android:backgroundTint="@color/black"
-        android:background="@color/black" >
+    <com.example.paxilpaz.countdowntimer.views.ShotClockTimer
+        android:id="@+id/shot_clock_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/dot"
-            android:src="@drawable/dot"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:tint="@color/red"
-            android:layout_margin="8dp" />
+    <com.example.paxilpaz.countdowntimer.views.TimerButtonsLayout
+        android:id="@+id/timer_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tenth_of_seconds"
-            android:src="@drawable/digit_0"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/dot"
-            android:layout_margin="8dp"
-            android:tint="@color/red" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/seconds_action"
-            android:src="@drawable/digit_4"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/dot"
-            android:layout_margin="8dp"
-            android:tint="@color/red" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tens_seconds_action"
-            android:src="@drawable/digit_2"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false"
-            android:layout_toStartOf="@+id/seconds_action"
-            android:layout_margin="8dp"
-            android:tint="@color/red" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:weightSum="1"
-        android:id="@+id/timer_buttons">
-
-        <ImageButton
-            android:layout_width="60dp"
-            android:layout_height="65dp"
-            android:id="@+id/start_pause_resume_button"
-            android:src="@drawable/start"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:minWidth="70dp"
-            android:minHeight="70dp"
-            android:layout_weight="0.25"
-            android:layout_marginTop="3dp" />
-
-        <ImageButton
-            android:layout_width="60dp"
-            android:layout_height="65dp"
-            android:id="@+id/reset_24_button"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/reset_24"
-            android:nestedScrollingEnabled="true"
-            android:maxHeight="70dp"
-            android:maxWidth="70dp"
-            android:scaleType="centerInside"
-            android:layout_marginTop="3dp"
-            android:layout_weight="0.25"
-            android:tint="@android:color/darker_gray" />
-
-        <ImageButton
-            android:layout_width="60dp"
-            android:layout_height="65dp"
-            android:id="@+id/reset_14_button"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/reset_14"
-            android:nestedScrollingEnabled="true"
-            android:maxHeight="70dp"
-            android:maxWidth="70dp"
-            android:scaleType="centerInside"
-            android:layout_marginTop="3dp"
-            android:layout_weight="0.25"
-            android:tint="@android:color/darker_gray" />
-
-        <ImageButton
-            android:layout_width="60dp"
-            android:layout_height="65dp"
-            android:id="@+id/stop_button"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:src="@drawable/stop"
-            android:nestedScrollingEnabled="true"
-            android:maxHeight="70dp"
-            android:maxWidth="70dp"
-            android:scaleType="centerInside"
-            android:layout_marginTop="3dp"
-            android:layout_weight="0.25"
-            android:tint="@android:color/darker_gray" />
-    </LinearLayout>
 
 </LinearLayout>

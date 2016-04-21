@@ -1,4 +1,4 @@
-package com.example.paxilpaz.countdowntimer;
+package com.example.paxilpaz.countdowntimer.timer;
 
 import android.content.Context;
 import android.os.Handler;
@@ -43,6 +43,7 @@ public class BasketballCountDownTimer {
      * boolean representing if the timer was cancelled
      */
     private boolean mCancelled = false;
+    private boolean isPaused = false;
 
     public BasketballCountDownTimer(Context context) {
 
@@ -54,6 +55,7 @@ public class BasketballCountDownTimer {
     }
 
     public void onFinish() {
+        isPaused = true;
         timerData.updateData(0,0);
         cancel();
     }
@@ -63,6 +65,7 @@ public class BasketballCountDownTimer {
      */
     public synchronized final void cancel() {
         mCancelled = true;
+        isPaused = true;
         mHandler.removeMessages(START);
         mHandler.removeMessages(PAUSE);
         mHandler.removeMessages(RESUME);
@@ -80,6 +83,7 @@ public class BasketballCountDownTimer {
             onFinish();
             return;
         }
+        isPaused = false;
         //Compute Stop time for both action and period timers
         stopTimePeriod = SystemClock.elapsedRealtime() + periodTime;
         stopTimeShotClock = SystemClock.elapsedRealtime() + shotClockTime;
@@ -92,6 +96,7 @@ public class BasketballCountDownTimer {
             onFinish();
             return;
         }
+        isPaused = true;
         mHandler.removeMessages(START);
         mHandler.removeMessages(RESUME);
         mHandler.removeMessages(RESET_OFFENSIVE_REBOUND);
@@ -105,6 +110,7 @@ public class BasketballCountDownTimer {
             onFinish();
             return;
         }
+        isPaused = false;
         mHandler.removeMessages(START);
         mHandler.removeMessages(PAUSE);
         mHandler.removeMessages(RESET_OFFENSIVE_REBOUND);
@@ -194,4 +200,7 @@ public class BasketballCountDownTimer {
         }
     };
 
+    public synchronized boolean isPaused() {
+        return isPaused;
+    }
 }
