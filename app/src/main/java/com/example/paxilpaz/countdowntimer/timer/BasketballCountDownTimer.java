@@ -8,7 +8,7 @@ import android.os.SystemClock;
 /**
  * Created by paxilpaz on 05/04/16.
  */
-public class BasketballCountDownTimer {
+class BasketballCountDownTimer {
 
     //Constants
     private static final long MSEC_IN_SEC = 1000;
@@ -45,7 +45,7 @@ public class BasketballCountDownTimer {
     private boolean mCancelled = false;
     private boolean isPaused = false;
 
-    public BasketballCountDownTimer(Context context) {
+    BasketballCountDownTimer(Context context) {
 
         timerData = TimerData.getInstance(context);
 
@@ -54,7 +54,7 @@ public class BasketballCountDownTimer {
         periodTime = timerData.getPeriodTime() * MSEC_IN_SEC;
     }
 
-    public void onFinish() {
+    void onFinish() {
         isPaused = true;
         timerData.updateData(0,0);
         cancel();
@@ -63,7 +63,7 @@ public class BasketballCountDownTimer {
     /**
      * Cancel the countdown.
      */
-    public synchronized final void cancel() {
+    synchronized final void cancel() {
         mCancelled = true;
         isPaused = true;
         mHandler.removeMessages(START);
@@ -76,7 +76,7 @@ public class BasketballCountDownTimer {
     /**
      * Start the countdown.
      */
-    public synchronized final void start() {
+    synchronized final void start() {
         mCancelled = false;
         //If periodTime is less or equal to 0, then no point in starting the timer
         if (periodTime <= 0) {
@@ -91,7 +91,7 @@ public class BasketballCountDownTimer {
     }
 
     //Stops the timer
-    public synchronized final void pause() {
+    synchronized final void pause() {
         if (periodTime <= 0) {
             onFinish();
             return;
@@ -105,7 +105,7 @@ public class BasketballCountDownTimer {
     }
 
     //Resumes the timer
-    public synchronized final void resume() {
+    synchronized final void resume() {
         if (periodTime <= 0) {
             onFinish();
             return;
@@ -119,12 +119,12 @@ public class BasketballCountDownTimer {
     }
 
     //Resets the timer
-    public synchronized final void reset_offensive_rebound() {
+    synchronized final void reset_offensive_rebound() {
         mHandler.sendMessage(mHandler.obtainMessage(RESET_OFFENSIVE_REBOUND));
     }
 
     //Resets the timer
-    public synchronized final void reset_shot_clock() {
+    synchronized final void reset_shot_clock() {
         mHandler.sendMessage(mHandler.obtainMessage(RESET_ACTION));
     }
 
@@ -200,7 +200,7 @@ public class BasketballCountDownTimer {
         }
     };
 
-    public synchronized boolean isPaused() {
+    synchronized boolean isPaused() {
         return isPaused;
     }
 }
