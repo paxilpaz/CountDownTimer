@@ -66,6 +66,7 @@ class BasketballCountDownTimer {
     synchronized final void cancel() {
         mCancelled = true;
         isPaused = true;
+        timerData.updateData(0, 0);
         mHandler.removeMessages(START);
         mHandler.removeMessages(PAUSE);
         mHandler.removeMessages(RESUME);

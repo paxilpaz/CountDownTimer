@@ -110,6 +110,8 @@ public class TimerButtonsLayout extends LinearLayout implements View.OnClickList
                 start_pause_resume.setEnabled(true);
                 break;
             case  R.id.stop_button:
+                //stop countdown
+                timerData.cancelTimer();
                 resetTimerAndButtons();
                 break;
             default:
@@ -158,8 +160,7 @@ public class TimerButtonsLayout extends LinearLayout implements View.OnClickList
     }
 
     private void resetTimerAndButtons() {
-        //stop countdown
-        timerData.cancelTimer();
+
         //reset buttons
         start_pause_resume.setId(R.id.start_pause_resume_button);
         start_pause_resume.setImageResource(R.drawable.start);

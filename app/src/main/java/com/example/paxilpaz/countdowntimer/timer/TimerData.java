@@ -100,7 +100,7 @@ public class TimerData extends Observable {
         if (periodMillis == 0) {
             /*
             In this case, notify the observers that the period is over by putting the tens of
-            minutes variable for the period timer to -1
+            minutes variable for the period timer to MIN_VALUE
              */
             periodMinutesTens = Integer.MIN_VALUE;
         } else {
